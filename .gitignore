@@ -1,0 +1,8 @@
+.idea/
+
+# CMake
+cmake-build-debug/
+
+# SDL2
+SDL2.dll
+sdl2-config

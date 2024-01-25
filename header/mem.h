@@ -3,6 +3,7 @@
 
 #include "iostream"
 #include "cstdint"
+#include "stdexcept"
 
 #include "hw_reg.h"
 #include "mem_map.h"
@@ -43,10 +44,12 @@ public:
 
 	~Memory() = default;
 
-	uint8_t* get_vram_bank(uint16_t addr, int bank);
-	uint8_t* get_wram_bank(uint16_t addr, int bank);
+	uint8_t* read_vram_bank(uint16_t addr);
+	uint8_t* read_wram_bank_fix(uint16_t addr);
+	uint8_t* read_wram_bank_sw(uint16_t addr, int bank);
 
-	void* set_wram_bank(uint16_t addr, uint8_t val, int bank);
+	void write_wram_bank_fix(uint16_t addr, uint8_t val);
+	void write_wram_bank_sw(uint16_t addr, uint8_t val);
 };
 
 #endif //AYB_MEM_H

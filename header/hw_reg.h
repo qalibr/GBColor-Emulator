@@ -43,6 +43,7 @@ public:
 	~HardwareRegisters() = default;
 
 	[[nodiscard]] uint8_t get_vbk() const;
+	[[nodiscard]] uint8_t get_svbk() const;
 
 	void set_vbk(uint8_t val);
 };

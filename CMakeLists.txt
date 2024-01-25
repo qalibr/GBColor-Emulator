@@ -3,8 +3,6 @@ project(Ayb)
 
 set(CMAKE_CXX_STANDARD 17)
 
-# include_directories("C:/Users/Defeated/_Repo/_Libraries/SDL2-2.28.5/x86_64-w64-mingw32/include")
-
 set(SDL2_PATH_DESKTOP "C:/Users/Defeated/_Repo/_Libraries/SDL2-2.28.5")
 set(SDL2_PATH_LAPTOP "C:/Users/jorge/_repo/_resources/SDL2-2.28.5")
 

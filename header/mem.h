@@ -44,6 +44,9 @@ public:
 
 	~Memory() = default;
 
+	void switch_vram_bank(uint8_t val);
+	void switch_wram_bank(uint8_t val);
+
 	uint8_t* read_vram_bank(uint16_t addr);
 	uint8_t* read_wram_bank_fix(uint16_t addr);
 	uint8_t* read_wram_bank_sw(uint16_t addr, int bank);

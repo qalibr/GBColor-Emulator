@@ -1,7 +1,7 @@
 #ifndef AYB_HW_REG_ADDR_H
 #define AYB_HW_REG_ADDR_H
 
-#include <cstdint>
+#include "cstdint"
 
 struct HwRegAddr
 {

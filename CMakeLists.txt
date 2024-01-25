@@ -34,6 +34,8 @@ add_executable(Ayb main.cpp
         header/hw_reg_addr.h
         header/hw_reg.h
         src/mem.cpp
-        src/hw_reg.cpp)
+        src/hw_reg.cpp
+        header/IMbc.h
+        header/mbc3.h)
 
 target_link_libraries(Ayb mingw32 SDL2main SDL2)

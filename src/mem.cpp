@@ -4,11 +4,11 @@ uint8_t* Memory::read_vram_bank(uint16_t addr)
 {
 	if (hw_reg.get_vbk() == 0)
 	{
-		return &VRAM0[addr - MemoryMap::VRAM_BANK];
+		return &VRAM0[addr - MemoryMap::VRAM_BANK_END];
 	}
 	else
 	{
-		return &VRAM1[addr - MemoryMap::VRAM_BANK];
+		return &VRAM1[addr - MemoryMap::VRAM_BANK_END];
 	}
 }
 uint8_t* Memory::read_wram_bank_fix(uint16_t addr)
@@ -39,7 +39,6 @@ uint8_t* Memory::read_wram_bank_sw(uint16_t addr, int bank)
 
 	return &WRAM_BANKS[bank][addr - MemoryMap::WRAM_SW_START];
 }
-
 void Memory::write_wram_bank_fix(uint16_t addr, uint8_t val)
 {
 	if (addr <= MemoryMap::WRAM_FIX_START || addr >= MemoryMap::WRAM_FIX_END)
@@ -67,4 +66,12 @@ void Memory::write_wram_bank_sw(uint16_t addr, uint8_t val)
 	}
 
 	WRAM_BANKS[bank][addr - MemoryMap::WRAM_SW_START] = val;
+}
+void Memory::switch_vram_bank(uint8_t val)
+{
+	hw_reg.set_vbk(val);
+}
+void Memory::switch_wram_bank(uint8_t val)
+{
+	hw_reg.set_svbk(val);
 }

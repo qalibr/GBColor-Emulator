@@ -46,6 +46,7 @@ public:
 	[[nodiscard]] uint8_t get_svbk() const;
 
 	void set_vbk(uint8_t val);
+	void set_svbk(uint8_t val);
 };
 
 #endif //AYB_HW_REG_H

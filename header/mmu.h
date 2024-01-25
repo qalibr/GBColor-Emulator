@@ -1,11 +1,26 @@
 #ifndef AYB_MMU_H
 #define AYB_MMU_H
 
-#include <cstdint>
+#include "cstdint"
+
 #include "IMmu.h"
+#include "IMbc.h"
+
+// NOTES:
+// MBC: IMbc is implemented elsewhere, but it is used here.
+//
+// MMU: Implementing basic memory read/write functions here,
+// other classes will use IMmu to access read/write functions.
+//
+// Memory:
+// The Memory class will supply various getters/setters and
+// in general all useful helper functions to do with memory.
 
 class Mmu : public IMmu
 {
+private:
+	IMbc* mbc;
+
 public:
 	Mmu();
 	uint8_t read_byte(uint16_t adr) override;

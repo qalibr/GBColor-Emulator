@@ -40,13 +40,24 @@ public:
 	{
 		VBK = 0;
 	}
+
 	~HardwareRegisters() = default;
 
 	[[nodiscard]] uint8_t get_vbk() const;
 	[[nodiscard]] uint8_t get_svbk() const;
+	[[nodiscard]] uint8_t get_div() const;
+	[[nodiscard]] uint8_t get_tima() const;
+	[[nodiscard]] uint8_t get_tma() const;
+	[[nodiscard]] uint8_t get_tac() const;
+	[[nodiscard]] uint8_t get_if() const;
 
 	void set_vbk(uint8_t val);
 	void set_svbk(uint8_t val);
+	void set_div(uint8_t val);
+	void set_tima(uint8_t val);
+	void set_tma(uint8_t val);
+	void set_tac(uint8_t val);
+	void set_if(uint8_t val);
 };
 
 #endif //AYB_HW_REG_H

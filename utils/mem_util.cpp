@@ -2,7 +2,7 @@
 
 uint8_t* MemoryUtility::read_vram_bank(uint16_t addr)
 {
-	if (hw_reg.get_vbk() == 0)
+	if (hw_reg->get_vbk() == 0)
 	{
 		return &VRAM0[addr - MemoryMap::VRAM_END];
 	}
@@ -22,7 +22,7 @@ uint8_t* MemoryUtility::read_wram_fix(uint16_t addr)
 }
 uint8_t* MemoryUtility::read_wram_sw(uint16_t addr, int bank)
 {
-	bank = hw_reg.get_svbk();
+	bank = hw_reg->get_svbk();
 	if (bank == 0)
 	{
 		bank = 1; // 0 is interpreted as 1.
@@ -57,7 +57,7 @@ uint8_t* MemoryUtility::read_hram(uint16_t addr)
 }
 void MemoryUtility::write_vram_bank(uint16_t addr, uint8_t val)
 {
-	if (hw_reg.get_vbk() == 0)
+	if (hw_reg->get_vbk() == 0)
 	{
 		VRAM0[addr - MemoryMap::VRAM_START] = val;
 	}
@@ -77,7 +77,7 @@ void MemoryUtility::write_wram_bank_fix(uint16_t addr, uint8_t val)
 }
 void MemoryUtility::write_wram_bank_sw(uint16_t addr, uint8_t val)
 {
-	int bank = hw_reg.get_svbk();
+	int bank = hw_reg->get_svbk();
 	if (bank == 0)
 	{
 		bank = 1; // 0 is interpreted as 1.
@@ -96,11 +96,11 @@ void MemoryUtility::write_wram_bank_sw(uint16_t addr, uint8_t val)
 }
 void MemoryUtility::switch_vram_bank(uint8_t val)
 {
-	hw_reg.set_vbk(val);
+	hw_reg->set_vbk(val);
 }
 void MemoryUtility::switch_wram_bank(uint8_t val)
 {
-	hw_reg.set_svbk(val);
+	hw_reg->set_svbk(val);
 }
 void MemoryUtility::write_echo(uint16_t addr, uint8_t val)
 {
@@ -117,4 +117,17 @@ void MemoryUtility::write_io(uint16_t addr, uint8_t val)
 void MemoryUtility::write_hram(uint16_t addr, uint8_t val)
 {
 	HRAM[addr - MemoryMap::HRAM_START] = val;
+}
+bool MemoryUtility::is_tac_timer_enabled()
+{
+	return BitUtil::is_bit_set(hw_reg->get_tac(), 2);
+}
+bool MemoryUtility::is_speed_switch_pending()
+{
+	return BitUtil::is_bit_set(hw_reg->get_tac(), 0);
+}
+int MemoryUtility::get_tac_timer_freq()
+{
+	// Bit 0-1 of TAC register.
+	return hw_reg->get_tac() & 0x3;
 }

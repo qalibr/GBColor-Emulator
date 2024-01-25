@@ -45,6 +45,12 @@ add_executable(Ayb src/main.cpp
         src/cpu_reg.cpp
         src/cpu.cpp
         header/cpu_flag.h
-        src/cpu_flag.cpp)
+        src/cpu_flag.cpp
+        instr/op_code_map.h
+        header/timer.h
+        src/timer.cpp
+        utils/bit_util.cpp
+        header/int_ctrl.h
+        src/int_ctrl.cpp)
 
 target_link_libraries(Ayb mingw32 SDL2main SDL2)

@@ -7,6 +7,7 @@
 #include "mmu.h"
 #include "cpu_reg.h"
 #include "cpu_flag.h"
+#include "mem_util.h"
 
 class Cpu
 {

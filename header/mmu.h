@@ -6,7 +6,6 @@
 #include "IMmu.h"
 #include "IMbc.h"
 
-// NOTES:
 // MBC: IMbc is implemented elsewhere, but it is used here.
 //
 // MMU: Implementing basic memory read/write functions here,
@@ -15,6 +14,7 @@
 // Memory:
 // The Memory class will supply various getters/setters and
 // in general all useful helper functions to do with memory.
+// I'm considering making a memory utility class.
 
 class Mmu : public IMmu
 {

@@ -1,6 +1,6 @@
-#include "../header/mem.h"
+#include "../header/mem_util.h"
 
-uint8_t* Memory::read_vram_bank(uint16_t addr)
+uint8_t* MemoryUtility::read_vram_bank(uint16_t addr)
 {
 	if (hw_reg.get_vbk() == 0)
 	{
@@ -11,7 +11,7 @@ uint8_t* Memory::read_vram_bank(uint16_t addr)
 		return &VRAM1[addr - MemoryMap::VRAM_BANK_END];
 	}
 }
-uint8_t* Memory::read_wram_bank_fix(uint16_t addr)
+uint8_t* MemoryUtility::read_wram_bank_fix(uint16_t addr)
 {
 	if (addr <= MemoryMap::WRAM_FIX_START || addr >= MemoryMap::WRAM_FIX_END)
 	{
@@ -20,7 +20,7 @@ uint8_t* Memory::read_wram_bank_fix(uint16_t addr)
 
 	return &WRAM0[addr - MemoryMap::WRAM_FIX_START];
 }
-uint8_t* Memory::read_wram_bank_sw(uint16_t addr, int bank)
+uint8_t* MemoryUtility::read_wram_bank_sw(uint16_t addr, int bank)
 {
 	bank = hw_reg.get_svbk();
 	if (bank == 0)
@@ -39,7 +39,7 @@ uint8_t* Memory::read_wram_bank_sw(uint16_t addr, int bank)
 
 	return &WRAM_BANKS[bank][addr - MemoryMap::WRAM_SW_START];
 }
-void Memory::write_wram_bank_fix(uint16_t addr, uint8_t val)
+void MemoryUtility::write_wram_bank_fix(uint16_t addr, uint8_t val)
 {
 	if (addr <= MemoryMap::WRAM_FIX_START || addr >= MemoryMap::WRAM_FIX_END)
 	{
@@ -48,7 +48,7 @@ void Memory::write_wram_bank_fix(uint16_t addr, uint8_t val)
 
 	WRAM_BANKS[0][addr - MemoryMap::WRAM_FIX_START] = val;
 }
-void Memory::write_wram_bank_sw(uint16_t addr, uint8_t val)
+void MemoryUtility::write_wram_bank_sw(uint16_t addr, uint8_t val)
 {
 	int bank = hw_reg.get_svbk();
 	if (bank == 0)
@@ -67,11 +67,11 @@ void Memory::write_wram_bank_sw(uint16_t addr, uint8_t val)
 
 	WRAM_BANKS[bank][addr - MemoryMap::WRAM_SW_START] = val;
 }
-void Memory::switch_vram_bank(uint8_t val)
+void MemoryUtility::switch_vram_bank(uint8_t val)
 {
 	hw_reg.set_vbk(val);
 }
-void Memory::switch_wram_bank(uint8_t val)
+void MemoryUtility::switch_wram_bank(uint8_t val)
 {
 	hw_reg.set_svbk(val);
 }

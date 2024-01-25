@@ -10,7 +10,7 @@
 
 class Memory
 {
-private:
+protected:
 	uint8_t VRAM0[8192]{}; // VBK selects bank
 	uint8_t* WRAM_BANKS[8]{}; // SVBK selects bank
 	uint8_t WRAM0[4096]{};
@@ -43,16 +43,6 @@ public:
 	}
 
 	~Memory() = default;
-
-	void switch_vram_bank(uint8_t val);
-	void switch_wram_bank(uint8_t val);
-
-	uint8_t* read_vram_bank(uint16_t addr);
-	uint8_t* read_wram_bank_fix(uint16_t addr);
-	uint8_t* read_wram_bank_sw(uint16_t addr, int bank);
-
-	void write_wram_bank_fix(uint16_t addr, uint8_t val);
-	void write_wram_bank_sw(uint16_t addr, uint8_t val);
 };
 
 #endif //AYB_MEM_H

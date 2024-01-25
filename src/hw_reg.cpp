@@ -1,4 +1,4 @@
-#include "../header/hw_reg.h"
+#include "hw_reg.h"
 
 uint8_t HardwareRegisters::get_vbk() const
 {

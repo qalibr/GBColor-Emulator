@@ -1,17 +1,17 @@
-#include "../header/mem_util.h"
+#include "mem_util.h"
 
 uint8_t* MemoryUtility::read_vram_bank(uint16_t addr)
 {
 	if (hw_reg.get_vbk() == 0)
 	{
-		return &VRAM0[addr - MemoryMap::VRAM_BANK_END];
+		return &VRAM0[addr - MemoryMap::VRAM_END];
 	}
 	else
 	{
-		return &VRAM1[addr - MemoryMap::VRAM_BANK_END];
+		return &VRAM1[addr - MemoryMap::VRAM_END];
 	}
 }
-uint8_t* MemoryUtility::read_wram_bank_fix(uint16_t addr)
+uint8_t* MemoryUtility::read_wram_fix(uint16_t addr)
 {
 	if (addr <= MemoryMap::WRAM_FIX_START || addr >= MemoryMap::WRAM_FIX_END)
 	{
@@ -20,7 +20,7 @@ uint8_t* MemoryUtility::read_wram_bank_fix(uint16_t addr)
 
 	return &WRAM0[addr - MemoryMap::WRAM_FIX_START];
 }
-uint8_t* MemoryUtility::read_wram_bank_sw(uint16_t addr, int bank)
+uint8_t* MemoryUtility::read_wram_sw(uint16_t addr, int bank)
 {
 	bank = hw_reg.get_svbk();
 	if (bank == 0)
@@ -38,6 +38,33 @@ uint8_t* MemoryUtility::read_wram_bank_sw(uint16_t addr, int bank)
 	}
 
 	return &WRAM_BANKS[bank][addr - MemoryMap::WRAM_SW_START];
+}
+uint8_t* MemoryUtility::read_echo(uint16_t addr)
+{
+	return &ECHO[addr - MemoryMap::ECHO_START];
+}
+uint8_t* MemoryUtility::read_oam(uint16_t addr)
+{
+	return &OAM[addr - MemoryMap::OAM_START];
+}
+uint8_t* MemoryUtility::read_io(uint16_t addr)
+{
+	return &IO[addr - MemoryMap::IO_START];
+}
+uint8_t* MemoryUtility::read_hram(uint16_t addr)
+{
+	return &HRAM[addr - MemoryMap::HRAM_START];
+}
+void MemoryUtility::write_vram_bank(uint16_t addr, uint8_t val)
+{
+	if (hw_reg.get_vbk() == 0)
+	{
+		VRAM0[addr - MemoryMap::VRAM_START] = val;
+	}
+	else
+	{
+		VRAM1[addr - MemoryMap::VRAM_START] = val;
+	}
 }
 void MemoryUtility::write_wram_bank_fix(uint16_t addr, uint8_t val)
 {
@@ -74,4 +101,20 @@ void MemoryUtility::switch_vram_bank(uint8_t val)
 void MemoryUtility::switch_wram_bank(uint8_t val)
 {
 	hw_reg.set_svbk(val);
+}
+void MemoryUtility::write_echo(uint16_t addr, uint8_t val)
+{
+	ECHO[addr - MemoryMap::ECHO_START] = val;
+}
+void MemoryUtility::write_oam(uint16_t addr, uint8_t val)
+{
+	OAM[addr - MemoryMap::OAM_START] = val;
+}
+void MemoryUtility::write_io(uint16_t addr, uint8_t val)
+{
+	IO[addr - MemoryMap::IO_START] = val;
+}
+void MemoryUtility::write_hram(uint16_t addr, uint8_t val)
+{
+	HRAM[addr - MemoryMap::HRAM_START] = val;
 }

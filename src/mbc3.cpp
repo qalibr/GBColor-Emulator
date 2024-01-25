@@ -1,4 +1,4 @@
-#include "../header/mbc3.h"
+#include "mbc3.h"
 
 Mbc3::Mbc3(const std::vector<uint8_t>& romData, size_t romSize, size_t ramSize)
 {

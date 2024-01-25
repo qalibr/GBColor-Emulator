@@ -5,6 +5,8 @@
 
 #include "IMbc.h"
 #include "mem_util.h"
+#include "hw_reg.h"
+#include "hw_reg_addr.h"
 
 // MBC: IMbc is implemented elsewhere, but it is used here.
 //
@@ -15,7 +17,8 @@ class Mmu
 {
 private:
 	IMbc* mbc;
-	MemoryUtility mem_util;
+	MemoryUtility     mem_util;
+	HardwareRegisters hw_reg;
 
 public:
 	Mmu();

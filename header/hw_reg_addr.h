@@ -3,8 +3,7 @@
 
 #include "cstdint"
 
-struct HwRegAddr
-{
+struct HwRegAddr {
 	static constexpr uint16_t LCDC  = 0xFF40; // R/W
 	static constexpr uint16_t STAT  = 0xFF41; // R/W
 	static constexpr uint16_t SCY   = 0xFF42; // R/W

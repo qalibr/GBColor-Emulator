@@ -9,8 +9,7 @@
 #include "cpu_flag.h"
 #include "mem_util.h"
 
-class Cpu
-{
+class Cpu {
 private:
 	CpuRegisters cpu_reg;
 	CpuFlags     cpu_flag;

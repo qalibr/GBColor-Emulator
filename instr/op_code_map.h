@@ -8,13 +8,7 @@
 #include "cpu_flag.h"
 #include "mmu.h"
 
-// NOTES:
-/*
- *
- */
-
-class OpCodeMap
-{
+class OpCodeMap {
 private:
 	Cpu          cpu;
 	CpuRegisters cpu_reg;

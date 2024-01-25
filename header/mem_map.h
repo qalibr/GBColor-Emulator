@@ -3,8 +3,7 @@
 
 #include "cstdint"
 
-struct MemoryMap
-{
+struct MemoryMap {
 	static constexpr uint16_t ROM_FIX_START  = 0x0000;
 	static constexpr uint16_t ROM_FIX_END    = 0x3FFF;
 	static constexpr uint16_t ROM_SW_START   = 0x4000;

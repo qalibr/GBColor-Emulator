@@ -1,9 +1,7 @@
 #include "mmu.h"
 
-uint8_t Mmu::read_byte(uint16_t addr)
-{
-	switch (addr)
-	{
+uint8_t Mmu::read_byte(uint16_t addr) {
+	switch (addr) {
 	case HwRegAddr::VBK:
 		return hw_reg.get_vbk();
 	case HwRegAddr::SVBK:
@@ -12,8 +10,7 @@ uint8_t Mmu::read_byte(uint16_t addr)
 		break;
 	}
 
-	switch (addr)
-	{
+	switch (addr) {
 	case MemoryMap::ROM_FIX_START ... MemoryMap::ROM_FIX_END:
 		return mbc->read_rom_low(addr);
 	case MemoryMap::ROM_SW_START ... MemoryMap::ROM_SW_END:
@@ -40,10 +37,8 @@ uint8_t Mmu::read_byte(uint16_t addr)
 		throw std::out_of_range("Address out of range");
 	}
 }
-void Mmu::write_byte(uint16_t addr, uint8_t val)
-{
-	switch (addr)
-	{
+void Mmu::write_byte(uint16_t addr, uint8_t val) {
+	switch (addr) {
 	case HwRegAddr::VBK:
 		mem_util.switch_vram_bank(val);
 		return;
@@ -54,8 +49,7 @@ void Mmu::write_byte(uint16_t addr, uint8_t val)
 		break;
 	}
 
-	switch (addr)
-	{
+	switch (addr) {
 	case MemoryMap::ROM_FIX_START ... MemoryMap::ROM_SW_END:
 		mbc->write_rom(addr, val);
 		break;
@@ -89,12 +83,10 @@ void Mmu::write_byte(uint16_t addr, uint8_t val)
 		throw std::out_of_range("Address out of range");
 	}
 }
-uint16_t Mmu::read_word(uint16_t addr)
-{
+uint16_t Mmu::read_word(uint16_t addr) {
 	return read_byte(addr) | (read_byte(addr + 1) << 8);
 }
-void Mmu::write_word(uint16_t addr, uint16_t val)
-{
+void Mmu::write_word(uint16_t addr, uint16_t val) {
 	write_byte(addr, val & 0xFF);
 	write_byte(addr + 1, val >> 8);
 }

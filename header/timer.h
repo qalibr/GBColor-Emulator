@@ -8,8 +8,7 @@
 #include "mem_util.h"
 #include "int_ctrl.h"
 
-class Timer
-{
+class Timer {
 private:
 	HardwareRegisters   hw_reg;
 	MemoryUtility       mem_util;

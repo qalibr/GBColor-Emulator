@@ -3,8 +3,7 @@
 
 #include "cstdint"
 
-class CpuRegisters
-{
+class CpuRegisters {
 protected:
 	uint8_t  A;
 	uint8_t  F;

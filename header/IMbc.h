@@ -3,8 +3,7 @@
 
 #include "cstdint"
 
-class IMbc
-{
+class IMbc {
 public:
 	virtual ~IMbc() = default;
 

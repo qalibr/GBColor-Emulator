@@ -5,22 +5,17 @@
 #include "iomanip"
 #include "algorithm"
 
-Cartridge::Cartridge() : mbc(nullptr)
-{
+Cartridge::Cartridge() : mbc(nullptr) {
 }
-Cartridge::~Cartridge()
-{
+Cartridge::~Cartridge() {
 	delete mbc;
 }
-void Cartridge::init_mbc()
-{
-	if (romData.empty())
-	{
+void Cartridge::init_mbc() {
+	if (romData.empty()) {
 		throw std::runtime_error("ROM data is empty");
 	}
 
-	switch (romData[0x147])
-	{
+	switch (romData[0x147]) {
 	case 0x00:
 		throw std::runtime_error("Unsupported MBC");
 	case 0x01:
@@ -65,23 +60,19 @@ void Cartridge::init_mbc()
 	std::cout << "MBC Hex:        0x" << std::hex << std::uppercase << std::setw(2) << std::setfill('0')
 			  << static_cast<int>(romData[0x147]) << std::endl;
 }
-void Cartridge::load_rom()
-{
+void Cartridge::load_rom() {
 	std::string path_desktop = R"(C:\Users\Defeated\_Repo\_resources\PKMC.gbc)";
 	std::string path_laptop  = R"(C:\Users\jorge\Documents\PKMC.gbc)";
 
 	std::vector<std::string> paths = { path_desktop, path_laptop };
 
-	for (const auto& path: paths)
-	{
+	for (const auto& path: paths) {
 		std::ifstream file(path, std::ios::binary);
-		if (file)
-		{
+		if (file) {
 			romData = std::vector<uint8_t>(std::istreambuf_iterator<char>(file),
 					std::istreambuf_iterator<char>());
 
-			if (!romData.empty())
-			{
+			if (!romData.empty()) {
 				std::cout << "Cart: ROM loaded successfully" << std::endl;
 			}
 
@@ -92,10 +83,8 @@ void Cartridge::load_rom()
 
 	throw std::runtime_error("Failed to load ROM");
 }
-int Cartridge::get_rom_size(uint8_t val)
-{
-	switch (val)
-	{
+int Cartridge::get_rom_size(uint8_t val) {
+	switch (val) {
 	case 0x00:
 		return 32768;
 	case 0x01:
@@ -124,10 +113,8 @@ int Cartridge::get_rom_size(uint8_t val)
 		throw std::invalid_argument("Invalid ROM size: " + std::to_string(val));
 	}
 }
-int Cartridge::get_ram_size(uint8_t val)
-{
-	switch (val)
-	{
+int Cartridge::get_ram_size(uint8_t val) {
+	switch (val) {
 	case 0x00:
 		return 0;
 	case 0x01:
@@ -141,15 +128,12 @@ int Cartridge::get_ram_size(uint8_t val)
 	}
 }
 
-std::string Cartridge::get_game_title()
-{
+std::string Cartridge::get_game_title() {
 	std::string title;
 
-	for (int i = 0x134; i <= 0x143; i++)
-	{
+	for (int i = 0x134; i <= 0x143; i++) {
 		char c = romData[i];
-		if (c < 32 || c > 126)
-		{
+		if (c < 32 || c > 126) {
 			break;
 		}
 
@@ -158,14 +142,12 @@ std::string Cartridge::get_game_title()
 
 	return title;
 }
-std::string Cartridge::format_bytes(int B)
-{
+std::string Cartridge::format_bytes(int B) {
 	std::vector<std::string> suffixes = { "B", "KB", "MB", "GB", "TB" };
 	double                   len      = B;
 	int                      order    = 0;
 
-	while (len >= 1024 && order < suffixes.size() - 1)
-	{
+	while (len >= 1024 && order < suffixes.size() - 1) {
 		order++;
 		len /= 1024;
 	}

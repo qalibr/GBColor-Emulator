@@ -8,8 +8,7 @@
 #include "IMbc.h"
 #include "mbc3.h"
 
-class Cartridge
-{
+class Cartridge {
 private:
 	std::vector<uint8_t> romData;
 	IMbc* mbc;

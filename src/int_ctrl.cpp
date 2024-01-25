@@ -1,9 +1,7 @@
 #include "int_ctrl.h"
 
-void InterruptController::request_interrupt(InterruptType type)
-{
-	switch (type)
-	{
+void InterruptController::request_interrupt(InterruptType type) {
+	switch (type) {
 	case InterruptType::VBLANK:
 		hw_reg.set_if(BitUtil::set_bit(hw_reg.get_if(), 0));
 		break;
@@ -19,7 +17,7 @@ void InterruptController::request_interrupt(InterruptType type)
 	case InterruptType::JOYPAD:
 		hw_reg.set_if(BitUtil::set_bit(hw_reg.get_if(), 4));
 		break;
-		default:
-			throw std::runtime_error("Invalid interrupt type");
+	default:
+		throw std::runtime_error("Invalid interrupt type");
 	}
 }

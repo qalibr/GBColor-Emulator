@@ -9,8 +9,7 @@
 
 #include "IMbc.h"
 
-class Mbc3 : public IMbc
-{
+class Mbc3 : public IMbc {
 private:
 	static constexpr uint16_t ROM_BANK_SIZE = 0x4000;
 	static constexpr uint16_t RAM_BANK_SIZE = 0x2000;

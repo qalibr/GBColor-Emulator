@@ -3,8 +3,7 @@
 
 #include "cstdint"
 
-class HardwareRegisters
-{
+class HardwareRegisters {
 private:
 	uint8_t SVBK; // WRAM bank switch register. CGB only.
 	uint8_t VBK;  // VRAM bank switch register. CGB only.
@@ -36,8 +35,7 @@ private:
 	uint8_t IE;   // FF0F
 
 public:
-	HardwareRegisters()
-	{
+	HardwareRegisters() {
 		VBK = 0;
 	}
 

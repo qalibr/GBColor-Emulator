@@ -3,7 +3,21 @@ project(Ayb)
 
 set(CMAKE_CXX_STANDARD 17)
 
-include_directories("C:/Users/Defeated/_Repo/_Libraries/SDL2-2.28.5/x86_64-w64-mingw32/include")
+# include_directories("C:/Users/Defeated/_Repo/_Libraries/SDL2-2.28.5/x86_64-w64-mingw32/include")
+
+set(SDL2_PATH_DESKTOP "C:/Users/Defeated/_Repo/_Libraries/SDL2-2.28.5")
+set(SDL2_PATH_LAPTOP "C:/Users/jorge/_repo/_resources/SDL2-2.28.5")
+
+if(EXISTS "${SDL2_PATH_DESKTOP}/x86_64-w64-mingw32")
+    set(SDL2_PATH "${SDL2_PATH_DESKTOP}")
+elseif(EXISTS "${SDL2_PATH_LAPTOP}/x86_64-w64-mingw32")
+    set(SDL2_PATH "${SDL2_PATH_LAPTOP}")
+else()
+    message(FATAL_ERROR "SDL2 not found")
+endif()
+
+include_directories("${SDL2_PATH}/x86_64-w64-mingw32/include")
+link_directories("${SDL2_PATH}/x86_64-w64-mingw32/lib")
 
 include_directories(header)
 

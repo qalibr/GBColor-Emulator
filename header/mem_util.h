@@ -15,6 +15,9 @@ private:
 	HardwareRegisters hw_reg;
 
 public:
+	MemoryUtility() = default;
+	~MemoryUtility() = default;
+
 	void switch_vram_bank(uint8_t val);
 	void switch_wram_bank(uint8_t val);
 

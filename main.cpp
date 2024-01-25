@@ -1,8 +1,14 @@
-#include <iostream>
+#include "iostream"
 
-#include <SDL2/SDL.h>
+#include "SDL2/SDL.h"
+
+#include "header/cart.h"
 
 int main(int argc, char *argv[]) {
+	Cartridge cart;
+
+	cart.load_rom();
+
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         std::cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
         return 1;
@@ -21,7 +27,6 @@ int main(int argc, char *argv[]) {
         std::cout << "SDL_CreateRenderer Error: " << SDL_GetError() << std::endl;
         return 1;
     }
-
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

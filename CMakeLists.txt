@@ -27,7 +27,6 @@ add_executable(Ayb main.cpp
         header/screen.h
         src/screen.cpp
         header/util.h
-        header/IMmu.h
         header/mmu.h
         header/mem.h
         header/mem_map.h
@@ -38,6 +37,9 @@ add_executable(Ayb main.cpp
         header/mbc3.h
         src/mmu.cpp
         header/mem_util.h
-        src/mem_util.cpp)
+        src/mem_util.cpp
+        header/cart.h
+        src/cart.cpp
+        src/mbc3.cpp)
 
 target_link_libraries(Ayb mingw32 SDL2main SDL2)

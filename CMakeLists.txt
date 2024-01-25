@@ -24,7 +24,16 @@ include_directories(header)
 link_directories("C:/Users/Defeated/_Repo/_Libraries/SDL2-2.28.5/x86_64-w64-mingw32/lib")
 
 add_executable(Ayb main.cpp
-        header/Screen.h
-        src/Screen.cpp)
+        header/screen.h
+        src/screen.cpp
+        header/util.h
+        header/IMmu.h
+        header/mmu.h
+        header/mem.h
+        header/mem_map.h
+        header/hw_reg_addr.h
+        header/hw_reg.h
+        src/mem.cpp
+        src/hw_reg.cpp)
 
 target_link_libraries(Ayb mingw32 SDL2main SDL2)

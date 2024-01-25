@@ -1,9 +1,7 @@
 #include "timer.h"
 
-Timer::Timer()
-{
-	is_double_speed = false;
-}
+bool Timer::is_double_speed = false;
+
 void Timer::timer_step(int cycles)
 {
 	handle_div_register(cycles);
@@ -32,10 +30,9 @@ void Timer::handle_tima_register(int cycles)
 		hw_reg.set_tima(hw_reg.get_tima() + 1); // TIMA++
 	}
 }
-int Timer::max_cycles(float fps, bool is_double_speed)
+int Timer::max_cycles(float fps)
 {
-	// TODO
-	throw std::runtime_error("Not implemented");
+	return static_cast<int>(is_double_speed ? DOUBLE_FREQ / fps : (NORMAL_FREQ / fps));
 }
 void Timer::toggle_timer_speed()
 {

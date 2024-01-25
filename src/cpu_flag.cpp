@@ -30,7 +30,11 @@ bool CpuFlags::get_stop() const
 }
 bool CpuFlags::get_enable_interrupts() const
 {
-	return enable_interrupts;
+	return interrupts_enable;
+}
+bool CpuFlags::get_interrupts_pending_enable() const
+{
+	return interrupts_pending_enable;
 }
 void CpuFlags::set_z(bool val)
 {
@@ -62,5 +66,9 @@ void CpuFlags::set_stop(bool val)
 }
 void CpuFlags::set_enable_interrupts(bool val)
 {
-	enable_interrupts = val;
+	interrupts_enable = val;
+}
+void CpuFlags::set_interrupts_pending_enable(bool val)
+{
+	interrupts_pending_enable = val;
 }

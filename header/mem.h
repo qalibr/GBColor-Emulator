@@ -8,8 +8,7 @@
 #include "hw_reg.h"
 #include "mem_map.h"
 
-class Memory
-{
+class Memory {
 protected:
 	uint8_t VRAM0[8192]{}; // VBK selects bank
 	uint8_t* WRAM_BANKS[8]{}; // SVBK selects bank
@@ -27,11 +26,10 @@ protected:
 	uint8_t IO[128]{};
 	uint8_t HRAM[127]{};
 
-	HardwareRegisters hw_reg;
+	HardwareRegisters& hw_reg;
 public:
 
-	Memory()
-	{
+	explicit Memory(HardwareRegisters& hw_reg) : hw_reg(hw_reg) {
 		WRAM_BANKS[0] = WRAM0;
 		WRAM_BANKS[1] = WRAM1;
 		WRAM_BANKS[2] = WRAM2;

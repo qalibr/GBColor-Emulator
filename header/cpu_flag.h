@@ -5,10 +5,9 @@
 
 #include "cpu_reg.h"
 
-class CpuFlags : public CpuRegisters
-{
+class CpuFlags : public CpuRegisters {
 private:
-	CpuRegisters cpu_reg;
+	CpuRegisters& cpu_reg;
 
 	static constexpr uint8_t Z_FLAG  = 0x80;
 	static constexpr uint8_t N_FLAG  = 0x40;
@@ -23,10 +22,11 @@ private:
 	bool HALT{};
 	bool STOP{};
 
-	bool enable_interrupts{}; // Enable interrupt after next instruction.
+	bool interrupts_enable{};
+	bool interrupts_pending_enable{};
 
 public:
-	CpuFlags() = default;
+	explicit CpuFlags(CpuRegisters& cpu_reg) : cpu_reg(cpu_reg) {}
 
 	~CpuFlags() = default;
 
@@ -38,6 +38,8 @@ public:
 	[[nodiscard]] bool get_halt() const;
 	[[nodiscard]] bool get_stop() const;
 	[[nodiscard]] bool get_enable_interrupts() const;
+	[[nodiscard]] bool get_interrupts_pending_enable() const;
+
 
 	void set_z(bool val);
 	void set_n(bool val);
@@ -47,6 +49,7 @@ public:
 	void set_halt(bool val);
 	void set_stop(bool val);
 	void set_enable_interrupts(bool val);
+	void set_interrupts_pending_enable(bool val);
 };
 
 #endif //AYB_CPU_FLAG_H

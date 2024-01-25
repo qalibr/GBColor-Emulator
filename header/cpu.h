@@ -15,12 +15,12 @@ private:
 	CpuRegisters cpu_reg;
 	CpuFlags     cpu_flag;
 	Mmu          mmu;
-	int          clock_cycles{};
 
 public:
 	Cpu() = default;
 	~Cpu() = default;
 
+	int clock_cycles{};
 	int execute_step();
 	void interrupt_service_routine();
 	void push(uint16_t val);

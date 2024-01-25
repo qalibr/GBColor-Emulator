@@ -13,15 +13,16 @@
 // MemoryUtil:
 // Offers various helpers for accessing memory, for example switching banks.
 
-class Mmu
-{
+class Mmu {
 private:
 	IMbc* mbc;
-	MemoryUtility     mem_util;
-	HardwareRegisters hw_reg;
+	MemoryUtility mem_util;
+	HardwareRegisters& hw_reg;
 
 public:
-	Mmu() = default;
+	explicit Mmu(HardwareRegisters& hw_registers) : hw_reg(hw_registers), mem_util(hw_registers) {
+		mbc = nullptr;
+	}
 	~Mmu() = default;
 	uint8_t read_byte(uint16_t addr);
 	void write_byte(uint16_t addr, uint8_t val);

@@ -7,8 +7,7 @@
 #include "hw_reg.h"
 #include "bit_util.h"
 
-enum class InterruptType
-{
+enum class InterruptType {
 	VBLANK,
 	LCD_STAT,
 	TIMER,
@@ -16,13 +15,12 @@ enum class InterruptType
 	JOYPAD
 };
 
-class InterruptController
-{
+class InterruptController {
 private:
-	HardwareRegisters hw_reg;
+	HardwareRegisters& hw_reg;
 
 public:
-	InterruptController() = default;
+	explicit InterruptController(HardwareRegisters& hw_reg) : hw_reg(hw_reg) {}
 	~InterruptController() = default;
 
 	void request_interrupt(InterruptType type);

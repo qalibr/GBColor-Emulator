@@ -10,13 +10,12 @@
 #include "mem.h"
 #include "bit_util.h"
 
-class MemoryUtility : public Memory
-{
+class MemoryUtility : public Memory {
 private:
 	HardwareRegisters* hw_reg;
 
 public:
-	MemoryUtility() = default;
+	explicit MemoryUtility(HardwareRegisters& hw_regs) : Memory(hw_regs), hw_reg(&hw_regs) {};
 	~MemoryUtility() = default;
 
 	bool is_tac_timer_enabled();

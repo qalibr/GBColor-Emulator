@@ -45,10 +45,10 @@ void Mmu::write_byte(uint16_t addr, uint8_t val)
 	switch (addr)
 	{
 	case HwRegAddr::VBK:
-		hw_reg.set_vbk(val);
+		mem_util.switch_vram_bank(val);
 		return;
 	case HwRegAddr::SVBK:
-		hw_reg.set_svbk(val);
+		mem_util.switch_wram_bank(val);
 		return;
 	default:
 		break;

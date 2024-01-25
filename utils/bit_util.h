@@ -1,7 +1,7 @@
-#ifndef AYB_UTIL_H
-#define AYB_UTIL_H
+#ifndef AYB_BIT_UTIL_H
+#define AYB_BIT_UTIL_H
 
-#include <cstdint>
+#include "cstdint"
 
 class Util
 {
@@ -28,4 +28,4 @@ uint8_t Util::toggle_bit(uint8_t B, int b)
 	return B ^ (1 << b);
 }
 
-#endif //AYB_UTIL_H
+#endif //AYB_BIT_UTIL_H

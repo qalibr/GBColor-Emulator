@@ -20,13 +20,14 @@ include_directories("${SDL2_PATH}/x86_64-w64-mingw32/include")
 link_directories("${SDL2_PATH}/x86_64-w64-mingw32/lib")
 
 include_directories(header)
+include_directories(utils)
 
 link_directories("C:/Users/Defeated/_Repo/_Libraries/SDL2-2.28.5/x86_64-w64-mingw32/lib")
 
-add_executable(Ayb main.cpp
+add_executable(Ayb src/main.cpp
         header/screen.h
         src/screen.cpp
-        header/util.h
+        utils/bit_util.h
         header/mmu.h
         header/mem.h
         header/mem_map.h
@@ -36,10 +37,16 @@ add_executable(Ayb main.cpp
         header/IMbc.h
         header/mbc3.h
         src/mmu.cpp
-        header/mem_util.h
-        src/mem_util.cpp
+        utils/mem_util.h
+        utils/mem_util.cpp
         header/cart.h
         src/cart.cpp
-        src/mbc3.cpp)
+        src/mbc3.cpp
+        header/cpu_reg.h
+        header/cpu.h
+        src/cpu_reg.cpp
+        src/cpu.cpp
+        header/cpu_flag.h
+        src/cpu_flag.cpp)
 
 target_link_libraries(Ayb mingw32 SDL2main SDL2)

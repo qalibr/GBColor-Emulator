@@ -21,7 +21,7 @@ private:
 	HardwareRegisters hw_reg;
 
 public:
-	Mmu();
+	Mmu() = default;
 	~Mmu() = default;
 	uint8_t read_byte(uint16_t addr);
 	void write_byte(uint16_t addr, uint8_t val);

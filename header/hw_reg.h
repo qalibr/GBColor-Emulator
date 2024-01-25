@@ -1,7 +1,7 @@
 #ifndef AYB_HW_REG_H
 #define AYB_HW_REG_H
 
-#include <cstdint>
+#include "cstdint"
 
 class HardwareRegisters
 {

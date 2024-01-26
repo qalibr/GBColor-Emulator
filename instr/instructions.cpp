@@ -1,23 +1,18 @@
 #include "operator.h"
 
-void Instructions::add_hl(Registers reg) {
-	uint16_t hl     = get_reg(HL);
-	uint16_t val    = get_reg(reg);
-	uint32_t result = hl + val;
-	set_flag(N, 0);
-	set_flag(HC, (hl & 0x0FFF) + (val & 0x0FFF) > 0x0FFF);
-	set_flag(CY, result > 0xFFFF);
-	set_reg(HL, result & 0xFFFF);
-	cpu.add_clock_cycles(2);
-	cpu.get_cpu_reg().add_pc(1);
+void Instructions::cost(uint8_t cycles, uint8_t size) {
+	cpu.add_clock_cycles(cycles);
+	cpu.get_cpu_reg().add_pc(size);
 }
-void Instructions::dec_16(Registers reg) {
-	set_reg(reg, get_reg(reg) - 1);
-	cpu.add_clock_cycles(2);
-	cpu.get_cpu_reg().add_pc(1);
+void Instructions::half_carry_on_add(uint8_t val1, uint8_t val2) {
+	set_flag(HC, (((val1 & 0x0F) + (val2 & 0x0F)) & 0x10) > 0x10);
 }
-void Instructions::inc_16(Registers reg) {
-	set_reg(reg, get_reg(reg) + 1);
-	cpu.add_clock_cycles(2);
-	cpu.get_cpu_reg().add_pc(1);
+void Instructions::half_carry_on_add(uint16_t val1, uint16_t val2) {
+	set_flag(HC, (((val1 & 0x00FF) + (val2 & 0x00FF)) & 0x100) > 0x0100);
+}
+void Instructions::half_carry_on_sub(uint8_t val1, uint8_t val2) {
+	set_flag(HC, ((val1 & 0x0F) - (val2 & 0x0F)) < 0);
+}
+void Instructions::half_carry_on_sub(uint16_t val1, uint16_t val2) {
+	set_flag(HC, ((val1 & 0x00FF) - (val2 & 0x00FF)) < 0);
 }

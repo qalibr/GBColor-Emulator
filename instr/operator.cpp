@@ -118,3 +118,22 @@ void Operator::set_flag(Flags flag, uint8_t val) {
 		throw std::runtime_error("Invalid flag");
 	}
 }
+uint8_t Operator::fetch_byte() {
+	uint16_t pc   = get_reg(PC);
+	uint8_t  byte = cpu.get_mmu().read_byte(pc);
+	set_reg(PC, pc + 1);
+	return byte;
+}
+int8_t Operator::fetch_signed_byte() {
+	return static_cast<int8_t>(fetch_byte());
+}
+uint16_t Operator::fetch_a8_address() {
+	uint8_t lower = fetch_byte();
+	return 0xFF00 | lower;
+}
+uint16_t Operator::fetch_word() {
+	uint16_t lower = fetch_byte();
+	uint16_t upper = fetch_byte();
+	return (upper << 8) | lower;
+}
+

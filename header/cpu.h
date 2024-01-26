@@ -17,7 +17,8 @@ private:
 
 	int clock_cycles{};
 public:
-	Cpu() = default;
+	// TODO: Not sure how, but HardwareRegisters became a dependency of Cpu.
+	Cpu(HardwareRegisters& hw_registers) : cpu_reg(), cpu_flag(cpu_reg), mmu(hw_registers) {}
 	~Cpu() = default;
 
 	[[nodiscard]] CpuRegisters& get_cpu_reg() { return cpu_reg; }

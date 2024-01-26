@@ -100,3 +100,6 @@ int MemoryUtility::get_tac_timer_freq() {
 	// Bit 0-1 of TAC register.
 	return hw_reg->get_tac() & 0x3;
 }
+bool MemoryUtility::is_interrupt_pending() {
+	return hw_reg->get_if() & hw_reg->get_ie();
+}

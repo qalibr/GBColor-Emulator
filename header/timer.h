@@ -47,6 +47,7 @@ public:
 	static int max_cycles(float fps);
 	static void toggle_timer_speed();
 	int get_timer_speed();
+	bool is_double_speed_enabled() { return is_double_speed; }
 };
 
 #endif //AYB_TIMER_H

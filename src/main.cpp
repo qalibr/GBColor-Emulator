@@ -3,9 +3,13 @@
 #include "SDL2/SDL.h"
 
 #include "cart.h"
+#include "cpu.h"
+#include "hw_reg.h"
 
 int main(int argc, char* argv[]) {
 	Cartridge cart;
+	HardwareRegisters hw_reg;
+	Cpu cpu(hw_reg);
 
 	cart.load_rom();
 

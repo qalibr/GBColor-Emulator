@@ -15,14 +15,16 @@ void Timer::handle_div_register(int cycles) {
 void Timer::handle_tima_register(int cycles) {
 	if (!mem_util.is_tac_timer_enabled()) return;
 	tima_counter += cycles;
-	if (tima_counter < get_timer_speed()) return;
-	tima_counter = 0;
-	if (hw_reg.get_tima() == 0xFF) {
-		hw_reg.set_tima(hw_reg.get_tma()); // Overflow, so reset to TMA.
-		int_ctrl.request_interrupt(InterruptType::TIMER);
-	}
-	else {
-		hw_reg.set_tima(hw_reg.get_tima() + 1); // TIMA++
+	int speed = get_timer_speed();
+	if (tima_counter >= speed) {
+		tima_counter -= speed; // Decrement to handle multiple increments in one cycle.
+		if (hw_reg.get_tima() == 0xFF) {
+			hw_reg.set_tima(hw_reg.get_tima()); // Overflow so set to TMA.
+			int_ctrl.request_interrupt(InterruptType::TIMER);
+		}
+		else {
+			hw_reg.set_tima(hw_reg.get_tima() + 1); // TIMA++
+		}
 	}
 }
 int Timer::max_cycles(float fps) {
@@ -32,5 +34,6 @@ void Timer::toggle_timer_speed() {
 	is_double_speed = !is_double_speed;
 }
 int Timer::get_timer_speed() {
-	return is_double_speed ? mem_util.get_tac_timer_freq() : mem_util.get_tac_timer_freq() * 2;
+	int timer_freq = mem_util.get_tac_timer_freq();
+	return is_double_speed ? timer_freq / 2 : timer_freq;
 }

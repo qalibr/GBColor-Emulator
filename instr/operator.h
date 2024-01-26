@@ -5,6 +5,9 @@
 #include "cstdint"
 
 #include "cpu.h"
+#include "mem_util.h"
+#include "timer.h"
+#include "hw_reg.h"
 
 enum Reg {
 	A,
@@ -52,6 +55,9 @@ enum Rst {
 class Operator {
 protected:
 	Cpu cpu;
+	MemoryUtility mem_util;
+	Timer timer;
+	HardwareRegisters hw_reg;
 
 public:
 	Operator();
@@ -70,7 +76,7 @@ public:
 
 class Instructions : public Operator {
 protected:
-	void cost(uint8_t cycles, uint8_t size);
+	void cost(uint8_t size, uint8_t cycles);
 	void half_carry_on_add(uint8_t val1, uint8_t val2);
 	void half_carry_on_add(uint16_t val1, uint16_t val2);
 	void half_carry_on_sub(uint8_t val1, uint8_t val2);

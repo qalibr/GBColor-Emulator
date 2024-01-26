@@ -20,6 +20,7 @@ public:
 
 	bool is_tac_timer_enabled();
 	bool is_speed_switch_pending();
+	bool is_interrupt_pending();
 
 	int get_tac_timer_freq();
 

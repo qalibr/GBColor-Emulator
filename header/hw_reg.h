@@ -36,7 +36,8 @@ private:
 
 public:
 	HardwareRegisters() {
-		VBK = 0;
+		VBK  = 0;
+		KEY1 = 0x7E; // Normal speed mode and no pending speed switch
 	}
 
 	~HardwareRegisters() = default;
@@ -47,7 +48,9 @@ public:
 	[[nodiscard]] uint8_t get_tima() const;
 	[[nodiscard]] uint8_t get_tma() const;
 	[[nodiscard]] uint8_t get_tac() const;
+	[[nodiscard]] uint8_t get_key1() const;
 	[[nodiscard]] uint8_t get_if() const;
+	[[nodiscard]] uint8_t get_ie() const;
 
 	void set_vbk(uint8_t val);
 	void set_svbk(uint8_t val);
@@ -55,7 +58,9 @@ public:
 	void set_tima(uint8_t val);
 	void set_tma(uint8_t val);
 	void set_tac(uint8_t val);
+	void set_key1(uint8_t val);
 	void set_if(uint8_t val);
+	void set_ie(uint8_t val);
 };
 
 #endif //AYB_HW_REG_H

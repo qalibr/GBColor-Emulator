@@ -100,8 +100,8 @@ void CpuRegisters::set_sp(uint16_t val) {
 void CpuRegisters::add_sp(uint8_t val) {
 	SP += val;
 }
-void CpuRegisters::dec_sp() {
-	SP--;
+void CpuRegisters::dec_sp(uint8_t val) {
+	SP -= val;
 }
 void CpuRegisters::set_pc(uint16_t val) {
 	PC = val;
@@ -109,6 +109,6 @@ void CpuRegisters::set_pc(uint16_t val) {
 void CpuRegisters::add_pc(uint8_t val) {
 	PC += val;
 }
-void CpuRegisters::dec_pc() {
-	PC--;
+void CpuRegisters::dec_pc(uint8_t val) {
+	PC -= val;
 }

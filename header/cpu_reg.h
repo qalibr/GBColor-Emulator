@@ -49,7 +49,11 @@ public:
 	void set_de(uint16_t val);
 	void set_hl(uint16_t val);
 	void set_sp(uint16_t val);
+	void add_sp(uint8_t val);
+	void dec_sp();
 	void set_pc(uint16_t val);
+	void add_pc(uint8_t val);
+	void dec_pc();
 };
 
 #endif //AYB_CPU_REG_H

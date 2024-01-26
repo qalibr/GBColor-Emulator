@@ -14,3 +14,6 @@ uint16_t Cpu::pop() {
 	cpu_reg.set_sp(2);
 	return mmu.read_word(cpu_reg.get_sp());
 }
+void Cpu::add_clock_cycles(int val) {
+	clock_cycles += val;
+}

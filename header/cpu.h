@@ -15,15 +15,21 @@ private:
 	CpuFlags     cpu_flag;
 	Mmu          mmu;
 
+	int clock_cycles{};
 public:
 	Cpu() = default;
 	~Cpu() = default;
 
-	int clock_cycles{};
+	[[nodiscard]] CpuRegisters& get_cpu_reg() { return cpu_reg; }
+	[[nodiscard]] CpuFlags& get_cpu_flag() { return cpu_flag; }
+	[[nodiscard]] Mmu& get_mmu() { return mmu; }
+
 	int execute_step();
 	void interrupt_service_routine();
 	void push(uint16_t val);
 	uint16_t pop();
+
+	void add_clock_cycles(int val);
 };
 
 #endif //AYB_CPU_H

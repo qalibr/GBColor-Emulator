@@ -18,6 +18,7 @@ include_directories("${SDL2_PATH}/x86_64-w64-mingw32/include")
 link_directories("${SDL2_PATH}/x86_64-w64-mingw32/lib")
 
 include_directories(header)
+include_directories(instr)
 include_directories(utils)
 
 link_directories("C:/Users/Defeated/_Repo/_Libraries/SDL2-2.28.5/x86_64-w64-mingw32/lib")
@@ -46,11 +47,16 @@ add_executable(Ayb src/main.cpp
         src/cpu.cpp
         header/cpu_flag.h
         src/cpu_flag.cpp
-        instr/op_code_map.h
+        instr/operator.h
         header/timer.h
         src/timer.cpp
         utils/bit_util.cpp
         header/int_ctrl.h
-        src/int_ctrl.cpp)
+        src/int_ctrl.cpp
+        instr/operator.cpp
+        instr/operator.cpp
+        instr/instructions.cpp
+        instr/opcode_map.cpp
+)
 
 target_link_libraries(Ayb mingw32 SDL2main SDL2)

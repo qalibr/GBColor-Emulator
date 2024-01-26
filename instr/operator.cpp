@@ -1,6 +1,6 @@
 #include "operator.h"
 
-uint16_t Operator::get_reg(Registers reg) {
+uint16_t Operator::get_reg(Reg reg) {
 	switch (reg) {
 	case A:
 		return cpu.get_cpu_reg().get_a();
@@ -34,7 +34,7 @@ uint16_t Operator::get_reg(Registers reg) {
 		throw std::runtime_error("Invalid register");
 	}
 }
-void Operator::set_reg(Registers reg, uint16_t val) {
+void Operator::set_reg(Reg reg, uint16_t val) {
 	switch (reg) {
 
 		/* 8-bit register - handling assign value */

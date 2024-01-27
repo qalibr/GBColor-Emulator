@@ -18,11 +18,24 @@ void OpcodeMap::init_instructions() {
 	/* Jump/Call Instructions */
 	instructions[0xE9] = [this]() { this->jp_hl(); };
 	instructions[0xD9] = [this]() { this->reti(); };
-	instructions[0x18] = [this]() { this->jr_e8(); };
+
 	instructions[0x20] = [this]() { this->jr_cc_e8(nz); };
 	instructions[0x28] = [this]() { this->jr_cc_e8(z); };
 	instructions[0x30] = [this]() { this->jr_cc_e8(nc); };
 	instructions[0x38] = [this]() { this->jr_cc_e8(c); };
+	instructions[0x18] = [this]() { this->jr_e8(); };
+
+	instructions[0xC2] = [this]() { this->jp_cc_a16(nz); };
+	instructions[0xCA] = [this]() { this->jp_cc_a16(z); };
+	instructions[0xD2] = [this]() { this->jp_cc_a16(nc); };
+	instructions[0xDA] = [this]() { this->jp_cc_a16(c); };
+	instructions[0xC3] = [this]() { this->jp_a16(); };
+
+	instructions[0xCD] = [this]() { this->call_a16(); };
+	instructions[0xC4] = [this]() { this->call_cc_a16(nz); };
+	instructions[0xCC] = [this]() { this->call_cc_a16(z); };
+	instructions[0xD4] = [this]() { this->call_cc_a16(nc); };
+	instructions[0xDC] = [this]() { this->call_cc_a16(c); };
 }
 void OpcodeMap::execute(uint8_t op_code) {
 	if (instructions[op_code]) {

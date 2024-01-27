@@ -59,7 +59,7 @@ void OpcodeMap::prefix_cb() {
 		cb_instructions[cb_op_code]();
 	}
 	else {
-		throw std::runtime_error("Invalid CB-prefixed opcode");
+		throw std::runtime_error("error, prefix_cb");
 	}
 	cost(1, 4);
 }
@@ -121,8 +121,8 @@ void Instructions::reti() {
 	cost(1, 16);
 }
 void Instructions::jr_cc_e8(Cc cc) {
-	int8_t e8   = fetch_signed_byte();
-	bool   jump = false;
+	int8_t e8 = fetch_signed_byte();
+	bool   jump;
 
 	switch (cc) {
 	case nz:
@@ -137,6 +137,8 @@ void Instructions::jr_cc_e8(Cc cc) {
 	case c:
 		jump = get_flag(CY);
 		break;
+	default:
+		throw std::runtime_error("error, jr_cc_e8");
 	}
 
 	if (jump) {
@@ -151,4 +153,68 @@ void Instructions::jr_e8() {
 	int8_t e8 = fetch_signed_byte();
 	set_reg(PC, get_reg(PC) + e8);
 	cost(2, 12);
+}
+void Instructions::jp_cc_a16(Cc cc) {
+	uint16_t a16 = fetch_a16_address();
+	bool     jump;
+
+	switch (cc) {
+	case nz:
+		jump = !get_flag(Z);
+		break;
+	case z:
+		jump = get_flag(Z);
+		break;
+	case nc:
+		jump = !get_flag(CY);
+		break;
+	case c:
+		jump = get_flag(CY);
+		break;
+	default:
+		throw std::runtime_error("error, jp_cc_a16");
+	}
+
+	if (jump) {
+		set_reg(PC, a16);
+		cost(3, 16);
+	}
+	else {
+		cost(3, 12);
+	}
+}
+void Instructions::jp_a16() {
+	uint16_t a16 = fetch_a16_address();
+	set_reg(PC, a16);
+	cost(3, 16);
+}
+void Instructions::call_cc_a16(Cc cc) {
+	uint16_t a16 = fetch_a16_address();
+	bool     call;
+
+	switch (cc) {
+	case nz:
+		call = !get_flag(Z);
+		break;
+	case z:
+		call = get_flag(Z);
+		break;
+	case nc:
+		call = !get_flag(CY);
+		break;
+	case c:
+		call = get_flag(CY);
+		break;
+	default:
+		throw std::runtime_error("error, call_cc_a16");
+	}
+
+	if (call) {
+		cpu.push(get_reg(PC) + 3);
+		set_reg(PC, a16);
+		cost(3, 24);
+	}
+	else {
+		cost(3, 24);
+	}
 }

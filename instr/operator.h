@@ -75,7 +75,7 @@ public:
 	uint8_t fetch_byte();         // n8 | Fetches a byte from memory and increments PC
 	int8_t fetch_signed_byte();   // e8 | Fetches a signed byte from memory and increments PC
 	uint16_t fetch_a8_address();  // a8 Fetches an address from memory and increments PC
-	uint16_t fetch_word();        // a16/n16 | Fetches a word from memory and increments PC twice.
+	uint16_t fetch_a16_address(); // a16/n16 | Fetches a word from memory and increments PC twice.
 };
 
 class Instructions : public Operator {
@@ -119,7 +119,7 @@ protected:
 	void jr_e8();                       // - - - - | 2, 12    | 0x18
 	void jp_cc_a16(Cc cc);              // - - - - | 3, 16/12 | 0xC2, 0xCA, 0xD2, 0xDA
 	void jp_a16();                      // - - - - | 3, 16    | 0xC3
-	void call_cc(Cc cc);                // - - - - | 3, 24/12 | 0xC4, 0xCC, 0xD4, 0xDC
+	void call_cc_a16(Cc cc);            // - - - - | 3, 24/12 | 0xC4, 0xCC, 0xD4, 0xDC
 	void call_a16();                    // - - - - | 3, 24    | 0xCD
 	void ret_cc(Cc cc);                 // - - - - | 1, 20/8  | 0xC0, 0xC8, 0xD0, 0xD8
 	void ret();                         // - - - - | 1, 16    | 0xC9

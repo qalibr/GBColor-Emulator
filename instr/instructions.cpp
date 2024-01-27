@@ -118,5 +118,37 @@ void Instructions::jp_hl() {
 void Instructions::reti() {
 	set_reg(PC, cpu.pop());
 	set_flag(IME, true);
-	cost(1, 4);
+	cost(1, 16);
+}
+void Instructions::jr_cc_e8(Cc cc) {
+	int8_t e8   = fetch_signed_byte();
+	bool   jump = false;
+
+	switch (cc) {
+	case nz:
+		jump = !get_flag(Z);
+		break;
+	case z:
+		jump = get_flag(Z);
+		break;
+	case nc:
+		jump = !get_flag(CY);
+		break;
+	case c:
+		jump = get_flag(CY);
+		break;
+	}
+
+	if (jump) {
+		set_reg(PC, get_reg(PC) + e8);
+		cost(2, 12);
+	}
+	else {
+		cost(2, 8);
+	}
+}
+void Instructions::jr_e8() {
+	int8_t e8 = fetch_signed_byte();
+	set_reg(PC, get_reg(PC) + e8);
+	cost(2, 12);
 }

@@ -72,7 +72,6 @@ public:
 	void set_flag(Flags flag, uint8_t val);
 
 
-
 	uint8_t fetch_byte();         // n8 | Fetches a byte from memory and increments PC
 	int8_t fetch_signed_byte();   // e8 | Fetches a signed byte from memory and increments PC
 	uint16_t fetch_a8_address();  // a8 Fetches an address from memory and increments PC
@@ -116,9 +115,9 @@ protected:
 	/* Jump/Call Instructions */
 	void jp_hl();                       // - - - - | 1, 4     | 0xE9
 	void reti();                        // - - - - | 1, 16    | 0xD9
-	void jr_cc(Cc cc);                  // - - - - | 2, 12/8  | 0x20, 0x28, 0x30, 0x38
+	void jr_cc_e8(Cc cc);               // - - - - | 2, 12/8  | 0x20, 0x28, 0x30, 0x38
 	void jr_e8();                       // - - - - | 2, 12    | 0x18
-	void jp_cc(Cc cc);                  // - - - - | 3, 16/12 | 0xC2, 0xCA, 0xD2, 0xDA
+	void jp_cc_a16(Cc cc);              // - - - - | 3, 16/12 | 0xC2, 0xCA, 0xD2, 0xDA
 	void jp_a16();                      // - - - - | 3, 16    | 0xC3
 	void call_cc(Cc cc);                // - - - - | 3, 24/12 | 0xC4, 0xCC, 0xD4, 0xDC
 	void call_a16();                    // - - - - | 3, 24    | 0xCD

@@ -63,3 +63,11 @@ void OpcodeMap::prefix_cb() {
 	}
 	cost(1, 4);
 }
+void Instructions::di() {
+	cpu.get_cpu_flag().set_ime(false);
+	cost(1, 4);
+}
+void Instructions::ei() {
+	cpu.get_cpu_flag().set_enable_interrupts_pending(true);
+	cost(1, 4);
+}

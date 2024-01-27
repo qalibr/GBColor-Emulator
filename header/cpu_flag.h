@@ -22,8 +22,8 @@ private:
 	bool HALT{};
 	bool STOP{};
 
-	bool interrupts_enable{};
-	bool interrupts_pending_enable{};
+	bool enable_interrupts{}; // Delays IME being set by one instruction.
+	bool enable_interrupts_pending{}; // Set by EI instruction.
 
 public:
 	explicit CpuFlags(CpuRegisters& cpu_reg) : cpu_reg(cpu_reg) {}
@@ -38,8 +38,7 @@ public:
 	[[nodiscard]] bool get_halt() const;
 	[[nodiscard]] bool get_stop() const;
 	[[nodiscard]] bool get_enable_interrupts() const;
-	[[nodiscard]] bool get_interrupts_pending_enable() const;
-
+	[[nodiscard]] bool get_enable_interrupts_pending() const;
 
 	void set_z(bool val);
 	void set_n(bool val);
@@ -49,7 +48,7 @@ public:
 	void set_halt(bool val);
 	void set_stop(bool val);
 	void set_enable_interrupts(bool val);
-	void set_interrupts_pending_enable(bool val);
+	void set_enable_interrupts_pending(bool val);
 };
 
 #endif //AYB_CPU_FLAG_H

@@ -22,10 +22,10 @@ bool CpuFlags::get_stop() const {
 	return STOP;
 }
 bool CpuFlags::get_enable_interrupts() const {
-	return interrupts_enable;
+	return enable_interrupts;
 }
-bool CpuFlags::get_interrupts_pending_enable() const {
-	return interrupts_pending_enable;
+bool CpuFlags::get_enable_interrupts_pending() const {
+	return enable_interrupts_pending;
 }
 void CpuFlags::set_z(bool val) {
 	F = val ? F | Z_FLAG : F & ~Z_FLAG;
@@ -49,8 +49,8 @@ void CpuFlags::set_stop(bool val) {
 	STOP = val;
 }
 void CpuFlags::set_enable_interrupts(bool val) {
-	interrupts_enable = val;
+	enable_interrupts = val;
 }
-void CpuFlags::set_interrupts_pending_enable(bool val) {
-	interrupts_pending_enable = val;
+void CpuFlags::set_enable_interrupts_pending(bool val) {
+	enable_interrupts_pending = val;
 }

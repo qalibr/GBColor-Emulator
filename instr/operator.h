@@ -54,9 +54,9 @@ enum Rst {
 
 class Operator {
 protected:
-	Cpu cpu;
-	MemoryUtility mem_util;
-	Timer timer;
+	Cpu               cpu;
+	MemoryUtility     mem_util;
+	Timer             timer;
 	HardwareRegisters hw_reg;
 
 public:
@@ -99,7 +99,6 @@ protected:
 	void nop();                         // - - - - | 1, 4 | 0x00
 	void stop();                        // - - - - | 1, 4 | 0x10
 	void halt();                        // - - - - | 1, 4 | 0x76
-	void prefix_cb();                   // - - - - | 1, 4 | 0xCB
 	void di();                          // - - - - | 1, 4 | 0xF3
 	void ei();                          // - - - - | 1, 4 | 0xFB
 
@@ -282,10 +281,10 @@ public:
 
 class OpcodeMap : public Instructions {
 private:
-	using Instructions = std::function<void(Reg)>;
-
-	Instructions instructions[256]    = {};
-	Instructions cb_instructions[256] = {};
+	using Instruction = std::function<void()>;
+	Instruction instructions[256]    = {};
+	Instruction cb_instructions[256] = {};
+	void prefix_cb(); // - - - - | 1, 4 | 0xCB
 
 public:
 	OpcodeMap() {
@@ -293,6 +292,9 @@ public:
 	};
 	~OpcodeMap();
 
+	Instruction* get_cb_instruction() {
+		return cb_instructions;
+	}
 	void init_instructions();
 	void execute(uint8_t op_code);
 };

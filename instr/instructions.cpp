@@ -53,3 +53,13 @@ void Instructions::halt() {
 
 	cost(1, 4);
 }
+void OpcodeMap::prefix_cb() {
+	uint8_t cb_op_code = fetch_byte();
+	if (cb_instructions[cb_op_code]) {
+		cb_instructions[cb_op_code]();
+	}
+	else {
+		throw std::runtime_error("Invalid CB-prefixed opcode");
+	}
+	cost(1, 4);
+}

@@ -136,7 +136,7 @@ void Operator::set_flag(Flags flag, uint8_t val) {
 uint8_t Operator::fetch_byte() {
 	uint16_t pc   = get_reg(PC);
 	uint8_t  byte = cpu.get_mmu().read_byte(pc);
-	set_reg(PC, pc + 1);
+	set_reg(PC, pc + 1); // TODO: Incrementing PC here, make sure this works as intended with the cost function.
 	return byte;
 }
 int8_t Operator::fetch_signed_byte() {
@@ -146,9 +146,14 @@ uint16_t Operator::fetch_a8_address() {
 	uint8_t lower = fetch_byte();
 	return 0xFF00 | lower;
 }
-uint16_t Operator::fetch_a16_address() {
+uint16_t Operator::fetch_address() {
 	uint16_t lower = fetch_byte();
 	uint16_t upper = fetch_byte();
 	return (upper << 8) | lower;
 }
-
+uint8_t Operator::read_byte(uint16_t addr) {
+	return cpu.get_mmu().read_byte(addr);
+}
+void Operator::write_byte(uint16_t addr, uint8_t byte) {
+	cpu.get_mmu().write_byte(addr, byte);
+}

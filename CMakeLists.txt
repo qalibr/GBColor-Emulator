@@ -57,6 +57,7 @@ add_executable(Ayb src/main.cpp
         instr/operator.cpp
         instr/instructions.cpp
         instr/opcode_map.cpp
+        instr/instr_debug.h
 )
 
 target_link_libraries(Ayb mingw32 SDL2main SDL2)

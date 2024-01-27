@@ -1,7 +1,10 @@
 #include "operator.h"
 
+/* Instruction reference
+ * https://rgbds.gbdev.io/docs/v0.6.1/gbz80.7#INSTRUCTION_OVERVIEW
+ */
 void Instructions::cost(uint8_t cycles, uint8_t size) {
-	cpu.add_clock_cycles(cycles);
+	cpu.add_clock_cycles(cycles); // BUG: This is potentially a bug. Might need to offset.
 	cpu.get_cpu_reg().add_pc(size);
 }
 void Instructions::half_carry_on_add(uint8_t val1, uint8_t val2) {
@@ -155,7 +158,7 @@ void Instructions::jr_e8() {
 	cost(2, 12);
 }
 void Instructions::jp_cc_a16(Cc cc) {
-	uint16_t a16 = fetch_a16_address();
+	uint16_t a16 = fetch_address();
 	bool     jump;
 
 	switch (cc) {
@@ -184,12 +187,12 @@ void Instructions::jp_cc_a16(Cc cc) {
 	}
 }
 void Instructions::jp_a16() {
-	uint16_t a16 = fetch_a16_address();
+	uint16_t a16 = fetch_address();
 	set_reg(PC, a16);
 	cost(3, 16);
 }
 void Instructions::call_cc_a16(Cc cc) {
-	uint16_t a16 = fetch_a16_address();
+	uint16_t a16 = fetch_address();
 	bool     call;
 
 	switch (cc) {
@@ -215,8 +218,14 @@ void Instructions::call_cc_a16(Cc cc) {
 		cost(3, 24);
 	}
 	else {
-		cost(3, 24);
+		cost(3, 12);
 	}
+}
+void Instructions::call_a16() {
+	uint16_t a16 = fetch_address();
+	cpu.push(get_reg(PC) + 3);
+	set_reg(PC, a16);
+	cost(3, 24);
 }
 void Instructions::ret_cc(Cc cc) {
 	bool ret;
@@ -255,42 +264,225 @@ void Instructions::rst(Rst rst) {
 	case rst_00h:
 		cpu.push(get_reg(PC));
 		set_reg(PC, 0x00);
-		cost(1, 16);
 		break;
 	case rst_08h:
 		cpu.push(get_reg(PC));
 		set_reg(PC, 0x08);
-		cost(1, 16);
 		break;
 	case rst_10h:
 		cpu.push(get_reg(PC));
 		set_reg(PC, 0x10);
-		cost(1, 16);
 		break;
 	case rst_18h:
 		cpu.push(get_reg(PC));
 		set_reg(PC, 0x18);
-		cost(1, 16);
 		break;
 	case rst_20h:
 		cpu.push(get_reg(PC));
 		set_reg(PC, 0x20);
-		cost(1, 16);
 		break;
 	case rst_28h:
 		cpu.push(get_reg(PC));
 		set_reg(PC, 0x28);
-		cost(1, 16);
 		break;
 	case rst_30h:
 		cpu.push(get_reg(PC));
 		set_reg(PC, 0x30);
-		cost(1, 16);
 		break;
 	case rst_38h:
 		cpu.push(get_reg(PC));
 		set_reg(PC, 0x38);
-		cost(1, 16);
 		break;
 	}
+
+	cost(1, 16);
+}
+void Instructions::ld_r16_n16(Reg reg) {
+	uint16_t n16 = fetch_address();
+
+	switch (reg) {
+	case BC:
+		set_reg(BC, n16);
+		break;
+	case DE:
+		set_reg(DE, n16);
+		break;
+	case HL:
+		set_reg(HL, n16);
+		break;
+	case SP:
+		set_reg(SP, n16);
+		break;
+	default:
+		throw std::runtime_error("error, ld_r16_n16");
+	}
+
+	cost(3, 12);
+}
+void Instructions::ld_a16_sp() {
+	uint16_t n16 = fetch_address();
+	write_byte(n16, get_reg(SP) & 0xFF);
+	write_byte(n16, get_reg(SP) >> 8);
+	cost(5, 20);
+}
+void Instructions::ld_pop_r16(Reg reg) {
+	switch (reg) {
+	case BC:
+		set_reg(BC, cpu.pop());
+		break;
+	case DE:
+		set_reg(DE, cpu.pop());
+		break;
+	case HL:
+		set_reg(HL, cpu.pop());
+		break;
+	case AF:
+		set_reg(AF, cpu.pop() & 0xFFF0); // Lower 4 bits are always 0.
+	default:
+		throw std::runtime_error("error, ld_pop_r16");
+	}
+
+	cost(1, 12);
+}
+void Instructions::ld_push_r16(Reg reg) {
+	switch (reg) {
+	case BC:
+		cpu.push(get_reg(BC));
+		break;
+	case DE:
+		cpu.push(get_reg(DE));
+		break;
+	case HL:
+		cpu.push(get_reg(HL));
+		break;
+	case AF:
+		cpu.push(get_reg(AF) & 0xFFF0);
+		break;
+	default:
+		throw std::runtime_error("error, ld_push_r16");
+	}
+
+	cost(1, 16);
+}
+void Instructions::ld_hl_sp_e8() {
+	int8_t   e8  = fetch_signed_byte();
+	uint16_t sp  = get_reg(SP);
+	uint16_t res = sp + static_cast<uint16_t>(e8);
+	set_flag(Z, false);
+	set_flag(N, false);
+	half_carry_on_add(sp, e8);
+	set_flag(CY, ((sp & 0xFF) + (e8 & 0xFF)) > 0xFF);
+	set_reg(HL, res);
+	cost(2, 12);
+}
+void Instructions::ld_sp_hl() {
+	set_reg(SP, get_reg(HL));
+	cost(1, 8);
+}
+void Instructions::ld_bc_a() {
+	uint16_t addr = get_reg(BC);
+	uint8_t  val  = get_reg(A);
+	write_byte(addr, val);
+	cost(1, 8);
+}
+void Instructions::ld_de_a() {
+	uint16_t addr = get_reg(DE);
+	uint8_t  val  = get_reg(A);
+	write_byte(addr, val);
+	cost(1, 8);
+}
+void Instructions::ld_a_bc() {
+	uint16_t addr = get_reg(BC);
+	uint8_t  val  = read_byte(addr);
+	set_reg(A, val);
+	cost(1, 8);
+}
+void Instructions::ld_a_de() {
+	uint16_t addr = get_reg(DE);
+	uint8_t  val  = read_byte(addr);
+	set_reg(A, val);
+	cost(1, 8);
+}
+void Instructions::ld_c_a() {
+	uint16_t addr = get_reg(C) + 0xFF00;
+	uint8_t  val  = get_reg(A);
+	write_byte(addr, val);
+	cost(1, 8);
+}
+void Instructions::ld_a_c() {
+	uint16_t addr = get_reg(C) + 0xFF00;
+	uint8_t  val  = read_byte(addr);
+	set_reg(A, val);
+	cost(1, 8);
+}
+void Instructions::ld_r8_hl(Reg reg) {
+	uint16_t val = read_byte(get_reg(HL));
+	set_reg(reg, val);
+	cost(1, 8);
+}
+void Instructions::ld_hl_r8(Reg reg) {
+	uint16_t addr = get_reg(HL);
+	uint8_t  val  = get_reg(reg);
+	write_byte(addr, val);
+	cost(1, 8);
+}
+void Instructions::ld_hli_a() {
+	uint16_t addr = get_reg(HL);
+	uint8_t  val  = get_reg(A);
+	write_byte(addr, val);
+	set_reg(HL, addr + 1);
+	cost(1, 8);
+}
+void Instructions::ld_hld_a() {
+	uint16_t addr = get_reg(HL);
+	uint8_t  val  = get_reg(A);
+	write_byte(addr, val);
+	set_reg(HL, addr - 1);
+	cost(1, 8);
+}
+void Instructions::ld_a_hli() {
+	uint16_t addr = get_reg(HL);
+	uint8_t  val  = read_byte(addr);
+	set_reg(A, val);
+	set_reg(HL, addr + 1);
+	cost(1, 8);
+}
+void Instructions::ld_a_hld() {
+	uint16_t addr = get_reg(HL);
+	uint8_t  val  = read_byte(addr);
+	set_reg(A, val);
+	set_reg(HL, addr - 1);
+	cost(1, 8);
+}
+void Instructions::ld_hl_n8() {
+	uint16_t addr = get_reg(HL);
+	uint8_t  val  = fetch_byte();
+	write_byte(addr, val);
+	cost(2, 12);
+}
+void Instructions::ldh_a8_a() {
+	uint8_t  a8   = fetch_byte();
+	uint16_t addr = 0xFF00 + a8;
+	uint8_t  val  = get_reg(A);
+	write_byte(addr, val);
+	cost(2, 12);
+}
+void Instructions::ldh_a_a8() {
+	uint8_t  a8   = fetch_byte();
+	uint16_t addr = 0xFF00 + a8;
+	uint8_t  val  = read_byte(addr);
+	set_reg(A, val);
+	cost(2, 12);
+}
+void Instructions::ld_a16_a() {
+	uint16_t addr = fetch_address();
+	uint8_t  val  = get_reg(A);
+	write_byte(addr, val);
+	cost(3, 16);
+}
+void Instructions::ld_a_a16() {
+	uint16_t addr = fetch_address();
+	uint8_t  val  = read_byte(addr);
+	set_reg(A, val);
+	cost(3, 16);
 }

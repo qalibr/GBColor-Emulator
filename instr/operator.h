@@ -8,6 +8,7 @@
 #include "mem_util.h"
 #include "timer.h"
 #include "hw_reg.h"
+#include "instr_debug.h"
 
 enum Reg {
 	A,
@@ -66,19 +67,33 @@ public:
 	Operator();
 	~Operator();
 
+
 	uint16_t get_reg(Reg reg);
 	void set_reg(Reg reg, uint16_t val);
 	uint8_t get_flag(Flags flag);
 	void set_flag(Flags flag, uint8_t val);
 
-
 	uint8_t fetch_byte();         // n8 | Fetches a byte from memory and increments PC
 	int8_t fetch_signed_byte();   // e8 | Fetches a signed byte from memory and increments PC
 	uint16_t fetch_a8_address();  // a8 Fetches an address from memory and increments PC
-	uint16_t fetch_a16_address(); // a16/n16 | Fetches a word from memory and increments PC twice.
+	uint16_t fetch_address();     // a16/n16 | Fetches a word from memory and increments PC twice.
+
+	uint8_t read_byte(uint16_t addr);
+	void write_byte(uint16_t addr, uint8_t byte);
 };
 
 class Instructions : public Operator {
+private:
+	InstructionDebug instr_debug;
+
+	void debug_pc_start() {
+		instr_debug.set_initial_pc(get_reg(PC));
+	}
+
+	void debug_pc_end(uint16_t expectedOffset) {
+		instr_debug.assert_pc(get_reg(PC), expectedOffset);
+	}
+
 protected:
 	void cost(uint8_t size, uint8_t cycles);
 	void half_carry_on_add(uint8_t val1, uint8_t val2);
@@ -86,8 +101,8 @@ protected:
 	void half_carry_on_sub(uint8_t val1, uint8_t val2);
 	void half_carry_on_sub(uint16_t val1, uint16_t val2);
 
-	/*
-	 * https://gbdev.io/gb-opcodes/optables/ - Opcode table
+	/* Opcode Table:
+	 * https://gbdev.io/gb-opcodes/optables/
 	 * - n8 means immediate 8-bit data
 	 * - n16 means immediate little-endian 16-bit data
 	 * - a8 means 8-bit unsigned data, which is added to $FF00 in certain instructions to create
@@ -127,30 +142,30 @@ protected:
 
 	/* Load Instruction 16-bit */
 	void ld_r16_n16(Reg reg);           // - - - - | 3, 12 | 0x01, 0x11, 0x21, 0x31
-	void ld_indirect_a16_sp();          // - - - - | 3, 20 | 0x08
+	void ld_a16_sp();                   // - - - - | 3, 20 | 0x08 (indirect)
 	void ld_pop_r16(Reg reg);           // - - - - | 1, 12 | 0xC1, 0xD1, 0xE1, 0xF1
 	void ld_push_r16(Reg reg);          // - - - - | 1, 16 | 0xC5, 0xD5, 0xE5, 0xF5
 	void ld_hl_sp_e8();                 // 0 0 H C | 2, 12 | 0xF8
 	void ld_sp_hl();                    // - - - - | 1, 8  | 0xF9
 
 	/* Load Instructions 8-bit - Indirect Addressing */
-	void ld_indirect_bc_a();            // - - - - | 1, 8  | 0x02
-	void ld_indirect_de_a();            // - - - - | 1, 8  | 0x12
-	void ld_indirect_hli_a();           // - - - - | 1, 8  | 0x22
-	void ld_indirect_hld_a();           // - - - - | 1, 8  | 0x32
-	void ld_indirect_a_bc();            // - - - - | 1, 8  | 0x0A
-	void ld_indirect_a_de();            // - - - - | 1, 8  | 0x1A
-	void ld_indirect_a_hli();           // - - - - | 1, 8  | 0x2A
-	void ld_indirect_a_hld();           // - - - - | 1, 8  | 0x3A
-	void ld_indirect_hl_n8();           // - - - - | 2, 12 | 0x36
-	void ld_r8_indirect_hl(Reg reg);    // - - - - | 1, 8  | 0x46, 0x4E, 0x56, 0x5E, 0x66, 0x6E, 0x7E
-	void ld_hl_indirect_r8(Reg reg);    // - - - - | 1, 8  | 0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x77
-	void ldh_indirect_a8_a();           // - - - - | 2, 12 | 0xE0
-	void ldh_indirect_a_a8();           // - - - - | 2, 12 | 0xF0
-	void ld_indirect_c_a();             // - - - - | 1, 8  | 0xE2
-	void ld_indirect_a_c();             // - - - - | 1, 8  | 0xF2
-	void ld_indirect_a16_a();           // - - - - | 3, 16 | 0xEA
-	void ld_indirect_a_a16();           // - - - - | 3, 16 | 0xFA
+	void ld_bc_a();                     // - - - - | 1, 8  | 0x02
+	void ld_de_a();                     // - - - - | 1, 8  | 0x12
+	void ld_a_bc();                     // - - - - | 1, 8  | 0x0A
+	void ld_a_de();                     // - - - - | 1, 8  | 0x1A
+	void ld_c_a();                      // - - - - | 1, 8  | 0xE2
+	void ld_a_c();                      // - - - - | 1, 8  | 0xF2
+	void ld_r8_hl(Reg reg);             // - - - - | 1, 8  | 0x46, 0x4E, 0x56, 0x5E, 0x66, 0x6E, 0x7E
+	void ld_hl_r8(Reg reg);             // - - - - | 1, 8  | 0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x77
+	void ld_hli_a();                    // - - - - | 1, 8  | 0x22
+	void ld_hld_a();                    // - - - - | 1, 8  | 0x32
+	void ld_a_hli();                    // - - - - | 1, 8  | 0x2A
+	void ld_a_hld();                    // - - - - | 1, 8  | 0x3A
+	void ld_hl_n8();                    // - - - - | 2, 12 | 0x36
+	void ldh_a8_a();                    // - - - - | 2, 12 | 0xE0
+	void ldh_a_a8();                    // - - - - | 2, 12 | 0xF0
+	void ld_a16_a();                    // - - - - | 3, 16 | 0xEA
+	void ld_a_a16();                    // - - - - | 3, 16 | 0xFA
 
 	/* Load Instructions 8-bit */
 	void ld_r8_n8(Reg reg, Reg n8);     // - - - - | 2, 8 | 0x06, 0x0E, 0x16, 0x1E, 0x26, 0x2E, 0x3E

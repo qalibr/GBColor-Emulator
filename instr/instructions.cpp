@@ -71,3 +71,43 @@ void Instructions::ei() {
 	cpu.get_cpu_flag().set_enable_interrupts_pending(true);
 	cost(1, 4);
 }
+void Instructions::rlca() {
+	uint8_t new_bit0 = (get_reg(A) & 0x80) >> 7;
+	uint8_t res      = (get_reg(A) << 1) | new_bit0;
+	set_flag(Z, 0);
+	set_flag(N, 0);
+	set_flag(HC, 0);
+	set_flag(CY, new_bit0 == 1);
+	set_reg(A, res);
+	cost(1, 4);
+}
+void Instructions::rla() {
+	uint8_t old_bit7 = (get_reg(A) & 0x80) >> 7;
+	uint8_t res      = (get_reg(A) << 1) | get_flag(CY);
+	set_flag(Z, 0);
+	set_flag(N, 0);
+	set_flag(HC, 0);
+	set_flag(CY, old_bit7 == 1);
+	set_reg(A, res);
+	cost(1, 4);
+}
+void Instructions::rrca() {
+	uint8_t new_bit7 = (get_reg(A) & 0x01) << 7;
+	uint8_t res      = (get_reg(A) >> 1) | new_bit7;
+	set_flag(Z, 0);
+	set_flag(N, 0);
+	set_flag(HC, 0);
+	set_flag(CY, new_bit7 == 1);
+	set_reg(A, res);
+	cost(1, 4);
+}
+void Instructions::rra() {
+	uint8_t old_bit0 = (get_reg(A) & 0x01) << 7;
+	uint8_t res      = (get_reg(A) >> 1) | (get_flag(CY) << 7);
+	set_flag(Z, 0);
+	set_flag(N, 0);
+	set_flag(HC, 0);
+	set_flag(CY, old_bit0 == 1);
+	set_reg(A, res);
+	cost(1, 4);
+}

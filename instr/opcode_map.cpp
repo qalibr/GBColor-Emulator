@@ -1,16 +1,18 @@
 #include "operator.h"
 
 void OpcodeMap::init_instructions() {
-	instructions[0x00] = [this]() { this->nop(); };
-
-	instructions[0x10] = [this]() { this->stop(); };
-
-	instructions[0x76] = [this]() { this->halt(); };
-
 	instructions[0xCB] = [this]() { this->prefix_cb(); };
-
+	instructions[0x00] = [this]() { this->nop(); };
+	instructions[0x10] = [this]() { this->stop(); };
+	instructions[0x76] = [this]() { this->halt(); };
 	instructions[0xF3] = [this]() { this->di(); };
 	instructions[0xFB] = [this]() { this->ei(); };
+
+	instructions[0x07] = [this]() { this->rlca(); };
+	instructions[0x17] = [this]() { this->rla(); };
+	instructions[0x0F] = [this]() { this->rrca(); };
+	instructions[0x1F] = [this]() { this->rra(); };
+
 }
 void OpcodeMap::execute(uint8_t op_code) {
 	if (instructions[op_code]) {

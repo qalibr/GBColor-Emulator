@@ -218,3 +218,79 @@ void Instructions::call_cc_a16(Cc cc) {
 		cost(3, 24);
 	}
 }
+void Instructions::ret_cc(Cc cc) {
+	bool ret;
+
+	switch (cc) {
+	case nz:
+		ret = !get_flag(Z);
+		break;
+	case z:
+		ret = get_flag(Z);
+		break;
+	case nc:
+		ret = !get_flag(CY);
+		break;
+	case c:
+		ret = get_flag(CY);
+		break;
+	default:
+		throw std::runtime_error("error, ret_cc");
+	}
+
+	if (ret) {
+		set_reg(PC, cpu.pop());
+		cost(1, 20);
+	}
+	else {
+		cost(1, 8);
+	}
+}
+void Instructions::ret() {
+	set_reg(PC, cpu.pop());
+	cost(1, 16);
+}
+void Instructions::rst(Rst rst) {
+	switch (rst) {
+	case rst_00h:
+		cpu.push(get_reg(PC));
+		set_reg(PC, 0x00);
+		cost(1, 16);
+		break;
+	case rst_08h:
+		cpu.push(get_reg(PC));
+		set_reg(PC, 0x08);
+		cost(1, 16);
+		break;
+	case rst_10h:
+		cpu.push(get_reg(PC));
+		set_reg(PC, 0x10);
+		cost(1, 16);
+		break;
+	case rst_18h:
+		cpu.push(get_reg(PC));
+		set_reg(PC, 0x18);
+		cost(1, 16);
+		break;
+	case rst_20h:
+		cpu.push(get_reg(PC));
+		set_reg(PC, 0x20);
+		cost(1, 16);
+		break;
+	case rst_28h:
+		cpu.push(get_reg(PC));
+		set_reg(PC, 0x28);
+		cost(1, 16);
+		break;
+	case rst_30h:
+		cpu.push(get_reg(PC));
+		set_reg(PC, 0x30);
+		cost(1, 16);
+		break;
+	case rst_38h:
+		cpu.push(get_reg(PC));
+		set_reg(PC, 0x38);
+		cost(1, 16);
+		break;
+	}
+}

@@ -36,6 +36,21 @@ void OpcodeMap::init_instructions() {
 	instructions[0xCC] = [this]() { this->call_cc_a16(z); };
 	instructions[0xD4] = [this]() { this->call_cc_a16(nc); };
 	instructions[0xDC] = [this]() { this->call_cc_a16(c); };
+
+	instructions[0xC0] = [this]() { this->ret_cc(nz); };
+	instructions[0xC8] = [this]() { this->ret_cc(z); };
+	instructions[0xD0] = [this]() { this->ret_cc(nc); };
+	instructions[0xD8] = [this]() { this->ret_cc(c); };
+	instructions[0xC9] = [this]() { this->ret(); };
+
+	instructions[0xC7] = [this]() { this->rst(rst_00h); };
+	instructions[0xCF] = [this]() { this->rst(rst_08h); };
+	instructions[0xD7] = [this]() { this->rst(rst_10h); };
+	instructions[0xDF] = [this]() { this->rst(rst_18h); };
+	instructions[0xE7] = [this]() { this->rst(rst_20h); };
+	instructions[0xEF] = [this]() { this->rst(rst_28h); };
+	instructions[0xF7] = [this]() { this->rst(rst_30h); };
+	instructions[0xFF] = [this]() { this->rst(rst_38h); };
 }
 void OpcodeMap::execute(uint8_t op_code) {
 	if (instructions[op_code]) {

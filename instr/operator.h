@@ -31,7 +31,10 @@ enum Flags {
 	Z,
 	N,
 	HC,
-	CY
+	CY,
+	IME,
+	STOP,
+	HALT
 };
 
 enum Cc {
@@ -67,6 +70,8 @@ public:
 	void set_reg(Reg reg, uint16_t val);
 	uint8_t get_flag(Flags flag);
 	void set_flag(Flags flag, uint8_t val);
+
+
 
 	uint8_t fetch_byte();         // n8 | Fetches a byte from memory and increments PC
 	int8_t fetch_signed_byte();   // e8 | Fetches a signed byte from memory and increments PC

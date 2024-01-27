@@ -7,12 +7,13 @@ void Cpu::interrupt_service_routine() {
 	throw std::runtime_error("Interrupt service routine not implemented");
 }
 void Cpu::push(uint16_t val) {
-	cpu_reg.set_sp(-2);
 	mmu.write_word(cpu_reg.get_sp(), val);
+	cpu_reg.dec_sp(2);
 }
 uint16_t Cpu::pop() {
-	cpu_reg.set_sp(2);
-	return mmu.read_word(cpu_reg.get_sp());
+	uint16_t sp = mmu.read_word(cpu_reg.get_sp());
+	cpu_reg.add_sp(2);
+	return sp;
 }
 void Cpu::add_clock_cycles(int val) {
 	clock_cycles += val;

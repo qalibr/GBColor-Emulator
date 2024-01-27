@@ -20,7 +20,7 @@ void Instructions::nop() {
 	cost(1, 4);
 }
 void Instructions::stop() {
-	cpu.get_cpu_flag().set_stop(true);
+	set_flag(STOP, true);
 
 	if (mem_util.is_speed_switch_pending()) {
 		cpu.add_clock_cycles(2052);
@@ -38,7 +38,7 @@ void Instructions::stop() {
 	cost(1, 4);
 }
 void Instructions::halt() {
-	cpu.get_cpu_flag().set_halt(true);
+	set_flag(HALT, true);
 	if (cpu.get_cpu_flag().get_ime()) {
 		// TODO: CPU wakes up and handles interrupts.
 		// TODO: The ISR needs to check if the CPU is halted and if so, unhalt it.
@@ -46,7 +46,7 @@ void Instructions::halt() {
 	else {
 		/* Halt bug */
 		if (mem_util.is_interrupt_pending()) {
-			cpu.get_cpu_flag().set_halt(false); // Wake up from an interrupt.
+			set_flag(HALT, false); // Wake up from an interrupt.
 			cpu.get_cpu_reg().dec_pc(1); // Decrement PC to simulate halt bug.
 		}
 	}
@@ -64,7 +64,7 @@ void OpcodeMap::prefix_cb() {
 	cost(1, 4);
 }
 void Instructions::di() {
-	cpu.get_cpu_flag().set_ime(false);
+	set_flag(IME, false);
 	cost(1, 4);
 }
 void Instructions::ei() {
@@ -74,9 +74,9 @@ void Instructions::ei() {
 void Instructions::rlca() {
 	uint8_t new_bit0 = (get_reg(A) & 0x80) >> 7;
 	uint8_t res      = (get_reg(A) << 1) | new_bit0;
-	set_flag(Z, 0);
-	set_flag(N, 0);
-	set_flag(HC, 0);
+	set_flag(Z, false);
+	set_flag(N, false);
+	set_flag(HC, false);
 	set_flag(CY, new_bit0 == 1);
 	set_reg(A, res);
 	cost(1, 4);
@@ -84,9 +84,9 @@ void Instructions::rlca() {
 void Instructions::rla() {
 	uint8_t old_bit7 = (get_reg(A) & 0x80) >> 7;
 	uint8_t res      = (get_reg(A) << 1) | get_flag(CY);
-	set_flag(Z, 0);
-	set_flag(N, 0);
-	set_flag(HC, 0);
+	set_flag(Z, false);
+	set_flag(N, false);
+	set_flag(HC, false);
 	set_flag(CY, old_bit7 == 1);
 	set_reg(A, res);
 	cost(1, 4);
@@ -94,9 +94,9 @@ void Instructions::rla() {
 void Instructions::rrca() {
 	uint8_t new_bit7 = (get_reg(A) & 0x01) << 7;
 	uint8_t res      = (get_reg(A) >> 1) | new_bit7;
-	set_flag(Z, 0);
-	set_flag(N, 0);
-	set_flag(HC, 0);
+	set_flag(Z, false);
+	set_flag(N, false);
+	set_flag(HC, false);
 	set_flag(CY, new_bit7 == 1);
 	set_reg(A, res);
 	cost(1, 4);
@@ -104,10 +104,19 @@ void Instructions::rrca() {
 void Instructions::rra() {
 	uint8_t old_bit0 = (get_reg(A) & 0x01) << 7;
 	uint8_t res      = (get_reg(A) >> 1) | (get_flag(CY) << 7);
-	set_flag(Z, 0);
-	set_flag(N, 0);
-	set_flag(HC, 0);
+	set_flag(Z, false);
+	set_flag(N, false);
+	set_flag(HC, false);
 	set_flag(CY, old_bit0 == 1);
 	set_reg(A, res);
+	cost(1, 4);
+}
+void Instructions::jp_hl() {
+	set_reg(PC, get_reg(HL));
+	cost(1, 4);
+}
+void Instructions::reti() {
+	set_reg(PC, cpu.pop());
+	set_flag(IME, true);
 	cost(1, 4);
 }

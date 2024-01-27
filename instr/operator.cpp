@@ -96,6 +96,12 @@ uint8_t Operator::get_flag(Flags flag) {
 		return cpu.get_cpu_flag().get_hc();
 	case CY:
 		return cpu.get_cpu_flag().get_cy();
+	case IME:
+		return cpu.get_cpu_flag().get_ime();
+	case HALT:
+		return cpu.get_cpu_flag().get_halt();
+	case STOP:
+		return cpu.get_cpu_flag().get_stop();
 	default:
 		throw std::runtime_error("Invalid flag");
 	}
@@ -113,6 +119,15 @@ void Operator::set_flag(Flags flag, uint8_t val) {
 		break;
 	case CY:
 		cpu.get_cpu_flag().set_cy(val);
+		break;
+	case IME:
+		cpu.get_cpu_flag().set_ime(val);
+		break;
+	case HALT:
+		cpu.get_cpu_flag().set_halt(val);
+		break;
+	case STOP:
+		cpu.get_cpu_flag().set_stop(val);
 		break;
 	default:
 		throw std::runtime_error("Invalid flag");

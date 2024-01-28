@@ -58,12 +58,12 @@ enum Rst {
 
 class Operator {
 protected:
-	HardwareRegisters hw_reg;
 	IMbc* mbc;
-	Mmu           mmu;
-	Cpu           cpu;
-	MemoryUtility mem_util;
-	Timer         timer;
+	HardwareRegisters hw_reg;
+	Mmu               mmu;
+	Cpu               cpu;
+	MemoryUtility     mem_util;
+	Timer             timer;
 
 public:
 	explicit Operator(IMbc* mbcController)
@@ -92,8 +92,8 @@ private:
 		instr_debug.set_initial_pc(get_reg(PC));
 	}
 
-	void debug_pc_end(uint16_t expectedOffset) {
-		instr_debug.assert_pc(get_reg(PC), expectedOffset);
+	void debug_pc_end(uint16_t currentPc, uint16_t expectedOffset) {
+		instr_debug.assert_pc(currentPc, expectedOffset);
 	}
 
 protected:
@@ -115,6 +115,12 @@ protected:
 	 * - a16 means little-endian 16-bit address
 	 * - e8 means 8-bit signed data
 	 */
+
+	/* Unused areas
+	 * 0xED, 0xF4, 0xFC, 0xFD, 0xD3, 0xDB,
+	 * 0xDD, 0xE3, 0xE4, 0xEB, 0xEC,
+	 */
+	void unused();
 
 	/* Control Instructions */
 	void nop();                         // - - - - | 1, 4 | 0x00
@@ -293,6 +299,18 @@ protected:
 	void res_r8(Reg reg, uint8_t bit);  // - - - - | 2, 8
 
 	/* CB:
+	 * 0: 0x86
+	 * 1: 0x8E
+	 * 2: 0x96
+	 * 3: 0x9E
+	 * 4: 0xA6
+	 * 5: 0xAE
+	 * 6: 0xB6
+	 * 7: 0xBE
+	 */
+	void res_hl(uint8_t bit);           // - - - - | 2, 16
+
+	/* CB:
 	 * 0: 0xC0, 0xC1, 0xC2, 0xC3, 0xC4, 0xC5, 0xC7
 	 * 1: 0xC8, 0xC9, 0xCA, 0xCB, 0xCC, 0xCD, 0xCF
 	 * 2: 0xD0, 0xD1, 0xD2, 0xD3, 0xD4, 0xD5, 0xD7
@@ -303,6 +321,18 @@ protected:
 	 * 7: 0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD, 0xFF
 	 */
 	void set_r8(Reg reg, uint8_t bit);  // - - - - | 2, 8
+
+	/* CB:
+	 * 0: 0xC6
+	 * 1: 0xCE
+	 * 2: 0xD6
+	 * 3: 0xDE
+	 * 4: 0xE6
+	 * 5: 0xEE
+	 * 6: 0xF6
+	 * 7: 0xFE
+	 */
+	void set_hl(uint8_t bit);           // - - - - | 2, 16
 
 public:
 	explicit Instructions(IMbc* mbcController) : Operator(mbcController) {}

@@ -134,10 +134,10 @@ void Operator::set_flag(Flags flag, uint8_t val) {
 	}
 }
 uint8_t Operator::fetch_byte() {
-	uint16_t pc   = get_reg(PC);
-	uint8_t  byte = cpu.get_mmu().read_byte(pc);
-	set_reg(PC, pc + 1); // TODO: Incrementing PC here, make sure this works as intended with the cost function.
-	return byte;
+	uint16_t pc = get_reg(PC);
+	return cpu.get_mmu().read_byte(pc);
+//	set_reg(PC, pc + 1); // TODO: Incrementing PC here, make sure this works as intended with the cost function.
+//	return byte;
 }
 int8_t Operator::fetch_signed_byte() {
 	return static_cast<int8_t>(fetch_byte());

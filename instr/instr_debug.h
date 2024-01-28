@@ -17,7 +17,9 @@ public:
 		if (currentPc != expected_pc) {
 			throw std::runtime_error("PC assertion failed: Expected " +
 									 std::to_string(expected_pc) +
-									 ", got " + std::to_string(currentPc));
+									 ", got " + std::to_string(currentPc) +
+									 ", Error: " +
+									 std::to_string(currentPc - expected_pc));
 		}
 	}
 };

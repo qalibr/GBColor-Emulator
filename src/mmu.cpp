@@ -6,6 +6,8 @@ uint8_t Mmu::read_byte(uint16_t addr) {
 		return hw_reg.get_vbk();
 	case HwRegAddr::SVBK:
 		return hw_reg.get_svbk();
+	case HwRegAddr::IE:
+		return hw_reg.get_ie();
 	default:
 		break;
 	}
@@ -34,7 +36,7 @@ uint8_t Mmu::read_byte(uint16_t addr) {
 	case MemoryMap::HRAM_START ... MemoryMap::HRAM_END:
 		return *mem_util.read_hram(addr);
 	default:
-		throw std::out_of_range("Address out of range");
+		throw std::out_of_range("Address out of range (read)" + std::to_string(addr));
 	}
 }
 void Mmu::write_byte(uint16_t addr, uint8_t val) {
@@ -44,6 +46,9 @@ void Mmu::write_byte(uint16_t addr, uint8_t val) {
 		return;
 	case HwRegAddr::SVBK:
 		mem_util.switch_wram_bank(val);
+		return;
+	case HwRegAddr::IE:
+		hw_reg.set_ie(val);
 		return;
 	default:
 		break;
@@ -80,7 +85,7 @@ void Mmu::write_byte(uint16_t addr, uint8_t val) {
 		mem_util.write_hram(addr, val);
 		break;
 	default:
-		throw std::out_of_range("Address out of range");
+		throw std::out_of_range("Address out of range (write): " + std::to_string(addr));
 	}
 }
 uint16_t Mmu::read_word(uint16_t addr) {

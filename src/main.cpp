@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
 
 	try {
 		int loop = 0;
-		while (loop < 100) {
+		while (loop < 1000) {
 			loop++;
 			opcode_map.execute(cpu.fetch_opcode());
 		}

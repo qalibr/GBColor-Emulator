@@ -6,9 +6,9 @@
  * DAA
  * https://forums.nesdev.org/viewtopic.php?p=196282&sid=c09957170f76c60f51bc270df9c829e5#p196282
  */
-void Instructions::cost(uint8_t cycles, uint8_t size) {
-	cpu.add_clock_cycles(cycles); // BUG: This is potentially a bug. Might need to offset.
+void Instructions::cost(uint8_t size, uint8_t cycles) {
 	cpu.get_cpu_reg().add_pc(size);
+	cpu.add_clock_cycles(cycles);
 }
 void Instructions::half_carry_on_add(uint8_t val1, uint8_t val2) {
 	set_flag(HC, (((val1 & 0x0F) + (val2 & 0x0F)) & 0x10) >= 0x10);
@@ -21,6 +21,9 @@ void Instructions::half_carry_on_sub(uint8_t val1, uint8_t val2) {
 }
 void Instructions::half_carry_on_sub(uint16_t val1, uint16_t val2) {
 	set_flag(HC, ((val1 & 0x00FF) - (val2 & 0x00FF)) < 0);
+}
+void Instructions::unused() {
+	// TODO:
 }
 void Instructions::nop() {
 	cost(1, 4);
@@ -59,13 +62,18 @@ void Instructions::halt() {
 	cost(1, 4);
 }
 void OpcodeMap::prefix_cb() {
+	/*
+	 * https://www.reddit.com/r/EmuDev/comments/7qf352/comment/dsp9jtx/?utm_source=share&utm_medium=web2x&context=3
+	 * This prefix_cb() requires atomicity.
+	 * TODO: Consider not treating this as an instruction.
+	 */
 	uint8_t cb_op_code = fetch_byte();
 	if (cb_instructions[cb_op_code]) {
 		cb_instructions[cb_op_code]();
 	} else {
 		throw std::runtime_error("error, prefix_cb");
 	}
-	cost(1, 4);
+	cost(0, 4);
 }
 void Instructions::di() {
 	set_flag(IME, false);
@@ -262,9 +270,16 @@ void Instructions::rst(Rst rst) {
 	cost(1, 16);
 }
 void Instructions::ld_r16_n16(Reg reg) {
-	uint16_t n16 = fetch_address();
-	set_reg(reg, n16);
-	cost(3, 12);
+	try {
+		debug_pc_start(); // TODO: Remove
+		uint16_t n16 = fetch_address();
+		set_reg(reg, n16);
+		cost(3, 12);
+		debug_pc_end(get_reg(PC), 3);
+	}
+	catch (std::exception& e) {
+		std::cout << e.what() << std::endl;
+	}
 }
 void Instructions::ld_a16_sp() {
 	uint16_t n16 = fetch_address();
@@ -285,6 +300,7 @@ void Instructions::ld_pop_r16(Reg reg) {
 		break;
 	case AF:
 		set_reg(AF, cpu.pop() & 0xFFF0); // Lower 4 bits are always 0.
+		break;
 	default:
 		throw std::runtime_error("error, ld_pop_r16");
 	}
@@ -363,9 +379,16 @@ void Instructions::ld_a_c() {
 	cost(1, 8);
 }
 void Instructions::ld_r8_hl(Reg reg) {
-	uint16_t val = read_byte(get_reg(HL));
-	set_reg(reg, val);
-	cost(1, 8);
+	try {
+		debug_pc_start(); // TODO: Remove
+		uint16_t val = read_byte(get_reg(HL));
+		set_reg(reg, val);
+		cost(1, 8);
+		debug_pc_end(get_reg(PC), 1);
+	}
+	catch (std::exception& e) {
+		std::cout << e.what() << std::endl;
+	}
 }
 void Instructions::ld_hl_r8(Reg reg) {
 	uint16_t addr = get_reg(HL);
@@ -836,4 +859,212 @@ void Instructions::ccf() {
 	set_flag(HC, false);
 	set_flag(CY, !get_flag(CY));
 	cost(1, 4);
+}
+void Instructions::rlc_r8(Reg reg) {
+	uint8_t  r8  = get_reg(reg);
+	uint16_t res = (r8 << 1) | (r8 >> 7);
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, (r8 & 0x80) == 0x80);
+	cost(2, 8);
+}
+void Instructions::rlc_hl() {
+	uint16_t addr = get_reg(HL);
+	uint8_t  r8   = read_byte(addr);
+	uint16_t res  = (r8 << 1) | (r8 >> 7);
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, (r8 & 0x80) == 0x80);
+	write_byte(addr, res);
+	cost(2, 16);
+}
+void Instructions::rl_r8(Reg reg) {
+	uint8_t  r8  = get_reg(reg);
+	uint16_t res = (r8 << 1) | get_flag(CY);
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, (r8 & 0x80) == 0x80);
+	set_reg(reg, res);
+	cost(2, 8);
+}
+void Instructions::rl_hl() {
+	uint16_t addr = get_reg(HL);
+	uint8_t  r8   = read_byte(addr);
+	uint16_t res  = (r8 << 1) | get_flag(CY);
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, (r8 & 0x80) == 0x80);
+	write_byte(addr, res);
+	cost(2, 16);
+}
+void Instructions::rrc_r8(Reg reg) {
+	uint8_t  r8  = get_reg(reg);
+	uint16_t res = (r8 >> 1) | (r8 << 7);
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, (r8 & 0x01) == 0x01);
+	set_reg(reg, res);
+	cost(2, 8);
+}
+void Instructions::rrc_hl() {
+	uint16_t addr = get_reg(HL);
+	uint8_t  r8   = read_byte(addr);
+	uint16_t res  = (r8 >> 1) | (r8 << 7);
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, (r8 & 0x01) == 0x01);
+	write_byte(addr, res);
+	cost(2, 16);
+}
+void Instructions::rr_r8(Reg reg) {
+	uint8_t  r8  = get_reg(reg);
+	uint16_t res = (r8 >> 1) | (get_flag(CY) << 7);
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, (r8 & 0x01) == 0x01);
+	set_reg(reg, res);
+	cost(2, 8);
+}
+void Instructions::rr_hl() {
+	uint16_t addr = get_reg(HL);
+	uint8_t  r8   = read_byte(addr);
+	uint16_t res  = (r8 >> 1) | (get_flag(CY) << 7);
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, (r8 & 0x01) == 0x01);
+	write_byte(addr, res);
+	cost(2, 16);
+}
+void Instructions::sla_r8(Reg reg) {
+	uint8_t  r8  = get_reg(reg);
+	uint16_t res = r8 << 1;
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, (r8 & 0x80) == 0x80);
+	set_reg(reg, res);
+	cost(2, 8);
+}
+void Instructions::sla_hl() {
+	uint16_t addr = get_reg(HL);
+	uint8_t  r8   = read_byte(addr);
+	uint16_t res  = r8 << 1;
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, (r8 & 0x80) == 0x80);
+	write_byte(addr, res);
+	cost(2, 16);
+}
+void Instructions::sra_r8(Reg reg) {
+	uint8_t  r8  = get_reg(reg);
+	uint16_t res = (r8 >> 1) | (r8 & 0x80);
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, (r8 & 0x01) == 0x01);
+	set_reg(reg, res);
+	cost(2, 8);
+}
+void Instructions::sra_hl() {
+	uint16_t addr = get_reg(HL);
+	uint8_t  r8   = read_byte(addr);
+	uint16_t res  = (r8 >> 1) | (r8 & 0x80);
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, (r8 & 0x01) == 0x01);
+	write_byte(addr, res);
+	cost(2, 16);
+}
+void Instructions::swap_r8(Reg reg) {
+	uint8_t  r8  = get_reg(reg);
+	uint16_t res = (r8 << 4) | (r8 >> 4);
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, false);
+	set_reg(reg, res);
+	cost(2, 8);
+}
+void Instructions::swap_hl() {
+	uint16_t addr = get_reg(HL);
+	uint8_t  r8   = read_byte(addr);
+	uint16_t res  = (r8 << 4) | (r8 >> 4);
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, false);
+	write_byte(addr, res);
+	cost(2, 16);
+}
+void Instructions::srl_r8(Reg reg) {
+	uint8_t  r8  = get_reg(reg);
+	uint16_t res = r8 >> 1;
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, (r8 & 0x01) == 0x01);
+	set_reg(reg, res);
+	cost(2, 8);
+}
+void Instructions::srl_hl() {
+	uint16_t addr = get_reg(HL);
+	uint8_t  r8   = read_byte(addr);
+	uint16_t res  = r8 >> 1;
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, (r8 & 0x01) == 0x01);
+	write_byte(addr, res);
+	cost(2, 16);
+}
+void Instructions::bit_r8(Reg reg, uint8_t bit) {
+	uint8_t r8 = get_reg(reg);
+	set_flag(Z, (r8 & (1 << bit)) == 0);
+	set_flag(N, false);
+	set_flag(HC, true);
+	cost(2, 8);
+}
+void Instructions::bit_hl(uint8_t bit) {
+	uint16_t addr = get_reg(HL);
+	uint8_t  r8   = read_byte(addr);
+	set_flag(Z, (r8 & (1 << bit)) == 0);
+	set_flag(N, false);
+	set_flag(HC, true);
+	cost(2, 16);
+}
+void Instructions::res_r8(Reg reg, uint8_t bit) {
+	uint8_t r8 = get_reg(reg);
+	r8 &= ~(1 << bit);
+	set_reg(reg, r8);
+	cost(2, 8);
+}
+void Instructions::res_hl(uint8_t bit) {
+	uint16_t addr = get_reg(HL);
+	uint8_t  r8   = read_byte(addr);
+	r8 &= ~(1 << bit);
+	write_byte(addr, r8);
+	cost(2, 16);
+}
+void Instructions::set_r8(Reg reg, uint8_t bit) {
+	uint8_t r8 = get_reg(reg);
+	r8 |= (1 << bit);
+	set_reg(reg, r8);
+	cost(2, 8);
+}
+void Instructions::set_hl(uint8_t bit) {
+	uint16_t addr = get_reg(HL);
+	uint8_t  r8   = read_byte(addr);
+	r8 |= (1 << bit);
+	write_byte(addr, r8);
+	cost(2, 16);
 }

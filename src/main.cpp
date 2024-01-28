@@ -12,7 +12,7 @@ int main(int argc, char* argv[]) {
 	cart.load_rom();
 	HardwareRegisters hw_reg;
 	Mmu               mmu(hw_reg, cart.get_mbc());
-	Cpu               cpu(cart.get_mbc(), mmu);
+	Cpu               cpu(mmu);
 	OpcodeMap         opcode_map(cart.get_mbc());
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {

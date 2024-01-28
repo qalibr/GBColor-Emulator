@@ -67,7 +67,7 @@ protected:
 
 public:
 	explicit Operator(IMbc* mbcController)
-			: hw_reg(), mbc(mbcController), mmu(hw_reg, mbc), cpu(mbc, mmu), mem_util(hw_reg), timer(hw_reg) {}
+			: hw_reg(), mbc(mbcController), mmu(hw_reg, mbc), cpu(mmu), mem_util(hw_reg), timer(hw_reg) {}
 	~Operator() = default;
 
 	uint16_t get_reg(Reg reg);

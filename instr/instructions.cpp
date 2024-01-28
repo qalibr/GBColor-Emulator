@@ -10,6 +10,9 @@ void Instructions::cost(uint8_t size, uint8_t cycles) {
 	cpu.get_cpu_reg().add_pc(size);
 	cpu.add_clock_cycles(cycles);
 }
+/* Half carry implementation source:
+ * https://stackoverflow.com/a/57822729
+ */
 void Instructions::half_carry_on_add(uint8_t val1, uint8_t val2) {
 	set_flag(HC, (((val1 & 0x0F) + (val2 & 0x0F)) & 0x10) >= 0x10);
 }

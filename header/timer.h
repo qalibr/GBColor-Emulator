@@ -4,12 +4,14 @@
 #include "cstdint"
 #include "vector"
 
-#include "hw_reg.h"
-#include "mem_util.h"
+#include "../memory/hw_reg.h"
+#include "../memory/mem_util.h"
 #include "int_ctrl.h"
+#include "mmu.h"
 
 class Timer {
 private:
+//	Mmu                 mmu;
 	HardwareRegisters   hw_reg;
 	MemoryUtility       mem_util;
 	InterruptController int_ctrl;

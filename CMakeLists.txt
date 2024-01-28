@@ -30,17 +30,17 @@ add_executable(Ayb src/main.cpp
         header/mmu.h
         header/mem.h
         header/mem_map.h
-        header/hw_reg_addr.h
-        header/hw_reg.h
-        src/hw_reg.cpp
-        header/IMbc.h
-        header/mbc3.h
+        memory/hw_reg_addr.h
+        memory/hw_reg.h
+        memory/hw_reg.cpp
+        mbc/IMbc.h
+        mbc/mbc3.h
         src/mmu.cpp
-        utils/mem_util.h
-        utils/mem_util.cpp
-        header/cart.h
-        src/cart.cpp
-        src/mbc3.cpp
+        memory/mem_util.h
+        memory/mem_util.cpp
+        mbc/cart.h
+        mbc/cart.cpp
+        mbc/mbc3.cpp
         header/cpu_reg.h
         header/cpu.h
         src/cpu_reg.cpp

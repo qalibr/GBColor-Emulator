@@ -5,9 +5,9 @@
 #include "cstdint"
 
 #include "cpu.h"
-#include "mem_util.h"
+//#include "../memory/mem_util.h"
 #include "timer.h"
-#include "hw_reg.h"
+//#include "../memory/hw_reg.h"
 #include "instr_debug.h"
 #include "util.h"
 
@@ -67,7 +67,7 @@ protected:
 
 public:
 	explicit Operator(IMbc* mbcController)
-			: hw_reg(), mbc(mbcController), mmu(hw_reg, mbc), cpu(hw_reg, mbc, mmu), mem_util(hw_reg), timer(hw_reg) {}
+			: hw_reg(), mbc(mbcController), mmu(hw_reg, mbc), cpu(mbc, mmu), mem_util(hw_reg), timer(hw_reg) {}
 	~Operator() = default;
 
 	uint16_t get_reg(Reg reg);

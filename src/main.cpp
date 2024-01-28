@@ -2,9 +2,9 @@
 
 #include "SDL2/SDL.h"
 
-#include "cart.h"
+#include "../mbc/cart.h"
 #include "cpu.h"
-#include "hw_reg.h"
+#include "../memory/hw_reg.h"
 #include "operator.h"
 
 int main(int argc, char* argv[]) {
@@ -12,7 +12,7 @@ int main(int argc, char* argv[]) {
 	cart.load_rom();
 	HardwareRegisters hw_reg;
 	Mmu               mmu(hw_reg, cart.get_mbc());
-	Cpu               cpu(hw_reg, cart.get_mbc(), mmu);
+	Cpu               cpu(cart.get_mbc(), mmu);
 	OpcodeMap         opcode_map(cart.get_mbc());
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {

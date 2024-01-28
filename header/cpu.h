@@ -7,8 +7,8 @@
 #include "mmu.h"
 #include "cpu_reg.h"
 #include "cpu_flag.h"
-#include "mem_util.h"
-#include "IMbc.h"
+#include "../memory/mem_util.h"
+#include "../mbc/IMbc.h"
 
 class Cpu {
 private:
@@ -20,7 +20,7 @@ private:
 	int clock_cycles{};
 public:
 	// TODO: Not sure how, but HardwareRegisters became a dependency of Cpu.
-	explicit Cpu(HardwareRegisters& hw_registers, IMbc* mbcController, Mmu& mmuController)
+	explicit Cpu(IMbc* mbcController, Mmu& mmuController)
 			: cpu_reg(), cpu_flag(cpu_reg), mbc(mbcController), mmu(mmuController) {}
 	~Cpu() = default;
 

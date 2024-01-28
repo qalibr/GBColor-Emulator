@@ -4,7 +4,7 @@
 #include "cstdint"
 #include "stdexcept"
 
-#include "hw_reg.h"
+#include "../memory/hw_reg.h"
 #include "bit_util.h"
 
 enum class InterruptType {

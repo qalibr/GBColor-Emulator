@@ -15,7 +15,7 @@ private:
 	HardwareRegisters* hw_reg;
 
 public:
-	explicit MemoryUtility(HardwareRegisters& hw_regs) : Memory(hw_regs), hw_reg(&hw_regs) {};
+	MemoryUtility() = default;
 	~MemoryUtility() = default;
 
 	bool is_tac_timer_enabled();

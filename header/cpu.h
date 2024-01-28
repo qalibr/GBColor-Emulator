@@ -12,15 +12,17 @@
 
 class Cpu {
 private:
-	CpuRegisters cpu_reg;
-	CpuFlags     cpu_flag;
+	CpuRegisters cpu_reg{};
+	CpuFlags     cpu_flag{};
+	IMbc* mbc;
 	Mmu & mmu;
 
 	int clock_cycles{};
 public:
-	// TODO: Not sure how, but HardwareRegisters became a dependency of Cpu.
-	explicit Cpu(Mmu& mmuController)
-			: cpu_reg(), cpu_flag(cpu_reg), mmu(mmuController) {}
+	explicit Cpu(IMbc* mbcController, Mmu& mmu) : mbc(mbcController), mmu(mmu) {
+		// Instantiate MMU
+		mmu = Mmu(mbc);
+	}
 	~Cpu() = default;
 
 	[[nodiscard]] CpuRegisters& get_cpu_reg() { return cpu_reg; }

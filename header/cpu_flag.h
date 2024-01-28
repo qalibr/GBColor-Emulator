@@ -7,7 +7,7 @@
 
 class CpuFlags : public CpuRegisters {
 private:
-	CpuRegisters& cpu_reg;
+	CpuRegisters cpu_reg{};
 
 	static constexpr uint8_t Z_FLAG  = 0x80;
 	static constexpr uint8_t N_FLAG  = 0x40;
@@ -26,8 +26,7 @@ private:
 	bool enable_interrupts_pending{}; // Set by EI instruction.
 
 public:
-	explicit CpuFlags(CpuRegisters& cpu_reg) : cpu_reg(cpu_reg) {}
-
+	CpuFlags() = default;
 	~CpuFlags() = default;
 
 	[[nodiscard]] bool get_z() const;

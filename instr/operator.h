@@ -58,16 +58,15 @@ enum Rst {
 
 class Operator {
 protected:
-	IMbc* mbc;
-	HardwareRegisters hw_reg;
-	Mmu               mmu;
+	HardwareRegisters hw_reg{};
 	Cpu               cpu;
 	MemoryUtility     mem_util;
 	Timer             timer;
 
 public:
-	explicit Operator(IMbc* mbcController)
-			: hw_reg(), mbc(mbcController), mmu(hw_reg, mbc), cpu(mmu), mem_util(hw_reg), timer(hw_reg) {}
+	Operator(Cpu& cpu, HardwareRegisters& hwReg, MemoryUtility& memUtil)
+			: cpu(cpu), hw_reg(hwReg), mem_util(memUtil) {}
+
 	~Operator() = default;
 
 	uint16_t get_reg(Reg reg);
@@ -335,7 +334,8 @@ protected:
 	void set_hl(uint8_t bit);           // - - - - | 2, 16
 
 public:
-	explicit Instructions(IMbc* mbcController) : Operator(mbcController) {}
+	Instructions(Cpu& cpu, HardwareRegisters& hwReg, MemoryUtility& memUtil)
+			: Operator(cpu, hwReg, memUtil) {}
 	~Instructions() = default;
 };
 
@@ -347,9 +347,10 @@ private:
 	void prefix_cb(); // - - - - | 1, 4 | 0xCB
 
 public:
-	explicit OpcodeMap(IMbc* mbcController) : Instructions(mbcController) {
+	OpcodeMap(Cpu& cpu, HardwareRegisters& hwReg, MemoryUtility& memUtil)
+			: Instructions(cpu, hwReg, memUtil) {
 		init_instructions();
-	};
+	}
 	~OpcodeMap() = default;
 
 	Instruction* get_cb_instruction() {

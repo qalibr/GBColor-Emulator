@@ -11,9 +11,10 @@ int main(int argc, char* argv[]) {
 	Cartridge cart;
 	cart.load_rom();
 	HardwareRegisters hw_reg;
-	Mmu               mmu(hw_reg, cart.get_mbc());
-	Cpu               cpu(mmu);
-	OpcodeMap         opcode_map(cart.get_mbc());
+	MemoryUtility     mem_util;
+	Mmu               mmu(cart.get_mbc());
+	Cpu               cpu(cart.get_mbc(), mmu);
+	OpcodeMap         opcode_map(cpu, hw_reg, mem_util);
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 		std::cout << "SDL_Init Error: " << SDL_GetError() << std::endl;

@@ -17,15 +17,15 @@
 class Mmu {
 private:
 	IMbc* mbc{};
-	MemoryUtility mem_util;
-	HardwareRegisters& hw_reg;
+	MemoryUtility     mem_util;
+	HardwareRegisters hw_reg;
 
 public:
-	explicit Mmu(HardwareRegisters& hw_registers, IMbc* mbcController)
-			: hw_reg(hw_registers), mbc(mbcController), mem_util(hw_registers) {}
+	Mmu(IMbc* mbcController) : mbc(mbcController) {}
 	~Mmu() = default;
 
 	[[nodiscard]] HardwareRegisters& get_hw_reg() { return hw_reg; }
+	[[nodiscard]] MemoryUtility& get_mem_util() { return mem_util; }
 
 	uint8_t read_byte(uint16_t addr);
 	void write_byte(uint16_t addr, uint8_t val);

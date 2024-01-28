@@ -17,10 +17,10 @@ enum class InterruptType {
 
 class InterruptController {
 private:
-	HardwareRegisters& hw_reg;
+	HardwareRegisters hw_reg;
 
 public:
-	explicit InterruptController(HardwareRegisters& hw_reg) : hw_reg(hw_reg) {}
+	InterruptController() = default;
 	~InterruptController() = default;
 
 	void request_interrupt(InterruptType type);

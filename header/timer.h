@@ -40,7 +40,7 @@ private:
 	};
 
 public:
-	Timer(HardwareRegisters& hw_regs) : hw_reg(hw_regs), mem_util(hw_regs), int_ctrl(hw_regs) {}
+	Timer() = default;
 	~Timer() = default;
 
 	void timer_step(int cycles);

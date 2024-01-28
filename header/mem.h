@@ -26,10 +26,9 @@ protected:
 	uint8_t IO[128]{};
 	uint8_t HRAM[127]{};
 
-	HardwareRegisters& hw_reg;
+	HardwareRegisters hw_reg;
 public:
-
-	explicit Memory(HardwareRegisters& hw_reg) : hw_reg(hw_reg) {
+	Memory() {
 		WRAM_BANKS[0] = WRAM0;
 		WRAM_BANKS[1] = WRAM1;
 		WRAM_BANKS[2] = WRAM2;
@@ -39,7 +38,6 @@ public:
 		WRAM_BANKS[6] = WRAM6;
 		WRAM_BANKS[7] = WRAM7;
 	}
-
 	~Memory() = default;
 };
 

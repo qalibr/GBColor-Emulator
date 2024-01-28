@@ -9,11 +9,11 @@
 
 int main(int argc, char* argv[]) {
 	Cartridge cart;
-	HardwareRegisters hw_reg;
-	Cpu cpu(hw_reg);
-	OpcodeMap opcode_map;
-
 	cart.load_rom();
+	HardwareRegisters hw_reg;
+	Mmu               mmu(hw_reg, cart.get_mbc());
+	Cpu               cpu(hw_reg, cart.get_mbc(), mmu);
+	OpcodeMap         opcode_map(cart.get_mbc());
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 		std::cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
@@ -32,6 +32,17 @@ int main(int argc, char* argv[]) {
 	if (renderer == nullptr) {
 		std::cout << "SDL_CreateRenderer Error: " << SDL_GetError() << std::endl;
 		return 1;
+	}
+
+	try {
+		int loop = 0;
+		while (loop < 100) {
+			loop++;
+			opcode_map.execute(cpu.fetch_opcode());
+		}
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Exception: " << e.what() << std::endl;
 	}
 
 	SDL_DestroyRenderer(renderer);

@@ -7,6 +7,7 @@
 #include "mem_util.h"
 #include "hw_reg.h"
 #include "hw_reg_addr.h"
+#include "mbc3.h"
 
 // MBC: IMbc is implemented elsewhere, but it is used here.
 //
@@ -15,14 +16,13 @@
 
 class Mmu {
 private:
-	IMbc* mbc;
+	IMbc* mbc{};
 	MemoryUtility mem_util;
 	HardwareRegisters& hw_reg;
 
 public:
-	explicit Mmu(HardwareRegisters& hw_registers) : hw_reg(hw_registers), mem_util(hw_registers) {
-		mbc = nullptr;
-	}
+	explicit Mmu(HardwareRegisters& hw_registers, IMbc* mbcController)
+			: hw_reg(hw_registers), mbc(mbcController), mem_util(hw_registers) {}
 	~Mmu() = default;
 	uint8_t read_byte(uint16_t addr);
 	void write_byte(uint16_t addr, uint8_t val);

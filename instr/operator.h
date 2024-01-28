@@ -9,6 +9,7 @@
 #include "timer.h"
 #include "hw_reg.h"
 #include "instr_debug.h"
+#include "util.h"
 
 enum Reg {
 	A,
@@ -58,12 +59,15 @@ enum Rst {
 class Operator {
 protected:
 	HardwareRegisters hw_reg;
-	Cpu               cpu;
-	MemoryUtility     mem_util;
-	Timer             timer;
+	IMbc* mbc;
+	Mmu           mmu;
+	Cpu           cpu;
+	MemoryUtility mem_util;
+	Timer         timer;
 
 public:
-	Operator() : hw_reg(), cpu(hw_reg), mem_util(hw_reg), timer(hw_reg) {}
+	explicit Operator(IMbc* mbcController)
+			: hw_reg(), mbc(mbcController), mmu(hw_reg, mbc), cpu(hw_reg, mbc, mmu), mem_util(hw_reg), timer(hw_reg) {}
 	~Operator() = default;
 
 	uint16_t get_reg(Reg reg);
@@ -301,7 +305,7 @@ protected:
 	void set_r8(Reg reg, uint8_t bit);  // - - - - | 2, 8
 
 public:
-	Instructions() = default;
+	explicit Instructions(IMbc* mbcController) : Operator(mbcController) {}
 	~Instructions() = default;
 };
 
@@ -313,7 +317,7 @@ private:
 	void prefix_cb(); // - - - - | 1, 4 | 0xCB
 
 public:
-	OpcodeMap() {
+	explicit OpcodeMap(IMbc* mbcController) : Instructions(mbcController) {
 		init_instructions();
 	};
 	~OpcodeMap() = default;

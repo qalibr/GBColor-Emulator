@@ -18,3 +18,9 @@ uint16_t Cpu::pop() {
 void Cpu::add_clock_cycles(int val) {
 	clock_cycles += val;
 }
+uint8_t Cpu::fetch_opcode() {
+	uint16_t pc     = cpu_reg.get_pc();
+	uint8_t  opcode = mmu.read_byte(pc);
+	cpu_reg.add_pc(1);
+	return opcode;
+}

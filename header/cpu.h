@@ -8,23 +8,27 @@
 #include "cpu_reg.h"
 #include "cpu_flag.h"
 #include "mem_util.h"
+#include "IMbc.h"
 
 class Cpu {
 private:
+	IMbc* mbc{};
 	CpuRegisters cpu_reg;
 	CpuFlags     cpu_flag;
-	Mmu          mmu;
+	Mmu & mmu;
 
 	int clock_cycles{};
 public:
 	// TODO: Not sure how, but HardwareRegisters became a dependency of Cpu.
-	Cpu(HardwareRegisters& hw_registers) : cpu_reg(), cpu_flag(cpu_reg), mmu(hw_registers) {}
+	explicit Cpu(HardwareRegisters& hw_registers, IMbc* mbcController, Mmu& mmuController)
+			: cpu_reg(), cpu_flag(cpu_reg), mbc(mbcController), mmu(mmuController) {}
 	~Cpu() = default;
 
 	[[nodiscard]] CpuRegisters& get_cpu_reg() { return cpu_reg; }
 	[[nodiscard]] CpuFlags& get_cpu_flag() { return cpu_flag; }
 	[[nodiscard]] Mmu& get_mmu() { return mmu; }
 
+	uint8_t fetch_opcode();
 	int execute_step();
 	void interrupt_service_routine();
 	void push(uint16_t val);

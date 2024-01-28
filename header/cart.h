@@ -24,6 +24,10 @@ public:
 	~Cartridge();
 
 	void load_rom();
+
+	[[nodiscard]] IMbc* get_mbc() const {
+		return mbc;
+	}
 };
 
 #endif //AYB_CART_H

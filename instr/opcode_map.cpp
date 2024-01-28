@@ -1,4 +1,5 @@
 #include "operator.h"
+#include "iomanip"
 
 void OpcodeMap::init_instructions() {
 	/* Control Instructions */
@@ -289,6 +290,19 @@ void OpcodeMap::execute(uint8_t op_code) {
 	if (instructions[op_code]) {
 		instructions[op_code]();
 
+		std::cout << "Op: 0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<unsigned>(op_code)
+				  << ", PC: 0x" << std::hex << std::setw(4) << std::setfill('0') << get_reg(PC)
+				  << ", SP: 0x" << std::hex << std::setw(4) << std::setfill('0') << get_reg(SP)
+				  << ", A: 0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<unsigned>(get_reg(A))
+				  << ", B: 0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<unsigned>(get_reg(B))
+				  << ", C: 0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<unsigned>(get_reg(C))
+				  << ", D: 0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<unsigned>(get_reg(D))
+				  << ", E: 0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<unsigned>(get_reg(E))
+				  << ", H: 0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<unsigned>(get_reg(H))
+				  << ", L: 0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<unsigned>(get_reg(L))
+				  << ", F: 0x" << std::hex << std::setw(2) << std::setfill('0') << static_cast<unsigned>(get_reg(F))
+				  << std::dec << std::endl;
+
 		/*
 		 * If EI has been called, interrupts are pending, and IME is false,
 		 * we set another flag to delay IME being set until after the next
@@ -310,5 +324,5 @@ void OpcodeMap::execute(uint8_t op_code) {
 		return;
 	}
 
-	throw std::runtime_error("Invalid opcode");
+	throw std::runtime_error("Invalid opcode: 0x" + Util::opcode_to_hex(op_code));
 }

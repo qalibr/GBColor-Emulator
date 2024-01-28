@@ -100,6 +100,190 @@ void OpcodeMap::init_instructions() {
 	instructions[0xF0] = [this]() { this->ldh_a_a8(); };
 	instructions[0xEA] = [this]() { this->ld_a16_a(); };
 	instructions[0xFA] = [this]() { this->ld_a_a16(); };
+
+	/* Load Instructions 8-bit */
+	instructions[0x06] = [this]() { this->ld_r8_n8(B); };
+	instructions[0x16] = [this]() { this->ld_r8_n8(D); };
+	instructions[0x26] = [this]() { this->ld_r8_n8(H); };
+	instructions[0x0E] = [this]() { this->ld_r8_n8(C); };
+	instructions[0x1E] = [this]() { this->ld_r8_n8(E); };
+	instructions[0x2E] = [this]() { this->ld_r8_n8(L); };
+	instructions[0x3E] = [this]() { this->ld_r8_n8(A); };
+
+	instructions[0x40] = [this]() { this->ld_r8_r8(B, B); };
+	instructions[0x41] = [this]() { this->ld_r8_r8(B, C); };
+	instructions[0x42] = [this]() { this->ld_r8_r8(B, D); };
+	instructions[0x43] = [this]() { this->ld_r8_r8(B, E); };
+	instructions[0x44] = [this]() { this->ld_r8_r8(B, H); };
+	instructions[0x45] = [this]() { this->ld_r8_r8(B, L); };
+	instructions[0x47] = [this]() { this->ld_r8_r8(B, A); };
+	instructions[0x48] = [this]() { this->ld_r8_r8(C, B); };
+	instructions[0x49] = [this]() { this->ld_r8_r8(C, C); };
+	instructions[0x4A] = [this]() { this->ld_r8_r8(C, D); };
+	instructions[0x4B] = [this]() { this->ld_r8_r8(C, E); };
+	instructions[0x4C] = [this]() { this->ld_r8_r8(C, H); };
+	instructions[0x4D] = [this]() { this->ld_r8_r8(C, L); };
+	instructions[0x4F] = [this]() { this->ld_r8_r8(C, A); };
+
+	instructions[0x50] = [this]() { this->ld_r8_r8(D, B); };
+	instructions[0x51] = [this]() { this->ld_r8_r8(D, C); };
+	instructions[0x52] = [this]() { this->ld_r8_r8(D, D); };
+	instructions[0x53] = [this]() { this->ld_r8_r8(D, E); };
+	instructions[0x54] = [this]() { this->ld_r8_r8(D, H); };
+	instructions[0x55] = [this]() { this->ld_r8_r8(D, L); };
+	instructions[0x57] = [this]() { this->ld_r8_r8(D, A); };
+	instructions[0x58] = [this]() { this->ld_r8_r8(E, B); };
+	instructions[0x59] = [this]() { this->ld_r8_r8(E, C); };
+	instructions[0x5A] = [this]() { this->ld_r8_r8(E, D); };
+	instructions[0x5B] = [this]() { this->ld_r8_r8(E, E); };
+	instructions[0x5C] = [this]() { this->ld_r8_r8(E, H); };
+	instructions[0x5D] = [this]() { this->ld_r8_r8(E, L); };
+	instructions[0x5F] = [this]() { this->ld_r8_r8(E, A); };
+
+	instructions[0x60] = [this]() { this->ld_r8_r8(H, B); };
+	instructions[0x61] = [this]() { this->ld_r8_r8(H, C); };
+	instructions[0x62] = [this]() { this->ld_r8_r8(H, D); };
+	instructions[0x63] = [this]() { this->ld_r8_r8(H, E); };
+	instructions[0x64] = [this]() { this->ld_r8_r8(H, H); };
+	instructions[0x65] = [this]() { this->ld_r8_r8(H, L); };
+	instructions[0x67] = [this]() { this->ld_r8_r8(H, A); };
+	instructions[0x68] = [this]() { this->ld_r8_r8(L, B); };
+	instructions[0x69] = [this]() { this->ld_r8_r8(L, C); };
+	instructions[0x6A] = [this]() { this->ld_r8_r8(L, D); };
+	instructions[0x6B] = [this]() { this->ld_r8_r8(L, E); };
+	instructions[0x6C] = [this]() { this->ld_r8_r8(L, H); };
+	instructions[0x6D] = [this]() { this->ld_r8_r8(L, L); };
+	instructions[0x6F] = [this]() { this->ld_r8_r8(L, A); };
+
+	instructions[0x78] = [this]() { this->ld_r8_r8(A, B); };
+	instructions[0x79] = [this]() { this->ld_r8_r8(A, C); };
+	instructions[0x7A] = [this]() { this->ld_r8_r8(A, D); };
+	instructions[0x7B] = [this]() { this->ld_r8_r8(A, E); };
+	instructions[0x7C] = [this]() { this->ld_r8_r8(A, H); };
+	instructions[0x7D] = [this]() { this->ld_r8_r8(A, L); };
+	instructions[0x7F] = [this]() { this->ld_r8_r8(A, A); };
+
+	/* Arithmetic 16-bit Instructions */
+	instructions[0x09] = [this]() { this->add_hl_r16(BC); };
+	instructions[0x19] = [this]() { this->add_hl_r16(DE); };
+	instructions[0x29] = [this]() { this->add_hl_r16(HL); };
+	instructions[0x39] = [this]() { this->add_hl_r16(SP); };
+
+	instructions[0x03] = [this]() { this->inc_r16(BC); };
+	instructions[0x13] = [this]() { this->inc_r16(DE); };
+	instructions[0x23] = [this]() { this->inc_r16(HL); };
+	instructions[0x33] = [this]() { this->inc_r16(SP); };
+	instructions[0x0B] = [this]() { this->dec_r16(BC); };
+	instructions[0x1B] = [this]() { this->dec_r16(DE); };
+	instructions[0x2B] = [this]() { this->dec_r16(HL); };
+	instructions[0x3B] = [this]() { this->dec_r16(SP); };
+
+	instructions[0xE8] = [this]() { this->add_sp_e8(); };
+
+	/* Arithmetic 8-bit Instructions */
+	instructions[0x04] = [this]() { this->inc_r8(B); };
+	instructions[0x14] = [this]() { this->inc_r8(D); };
+	instructions[0x24] = [this]() { this->inc_r8(H); };
+	instructions[0x34] = [this]() { this->inc_hl(); };
+	instructions[0x0C] = [this]() { this->inc_r8(C); };
+	instructions[0x1C] = [this]() { this->inc_r8(E); };
+	instructions[0x2C] = [this]() { this->inc_r8(L); };
+	instructions[0x3C] = [this]() { this->inc_r8(A); };
+
+	instructions[0x05] = [this]() { this->dec_r8(B); };
+	instructions[0x15] = [this]() { this->dec_r8(D); };
+	instructions[0x25] = [this]() { this->dec_r8(H); };
+	instructions[0x35] = [this]() { this->dec_hl(); };
+	instructions[0x0D] = [this]() { this->dec_r8(C); };
+	instructions[0x1D] = [this]() { this->dec_r8(E); };
+	instructions[0x2D] = [this]() { this->dec_r8(L); };
+	instructions[0x3D] = [this]() { this->dec_r8(A); };
+
+	instructions[0x80] = [this]() { this->add_a_r8(B); };
+	instructions[0x81] = [this]() { this->add_a_r8(C); };
+	instructions[0x82] = [this]() { this->add_a_r8(D); };
+	instructions[0x83] = [this]() { this->add_a_r8(E); };
+	instructions[0x84] = [this]() { this->add_a_r8(H); };
+	instructions[0x85] = [this]() { this->add_a_r8(L); };
+	instructions[0x86] = [this]() { this->add_a_hl(); };
+	instructions[0x87] = [this]() { this->add_a_r8(A); };
+
+	instructions[0x88] = [this]() { this->adc_a_r8(B); };
+	instructions[0x89] = [this]() { this->adc_a_r8(C); };
+	instructions[0x8A] = [this]() { this->adc_a_r8(D); };
+	instructions[0x8B] = [this]() { this->adc_a_r8(E); };
+	instructions[0x8C] = [this]() { this->adc_a_r8(H); };
+	instructions[0x8D] = [this]() { this->adc_a_r8(L); };
+	instructions[0x8E] = [this]() { this->adc_a_hl(); };
+	instructions[0x8F] = [this]() { this->adc_a_r8(A); };
+
+	instructions[0x90] = [this]() { this->sub_a_r8(B); };
+	instructions[0x91] = [this]() { this->sub_a_r8(C); };
+	instructions[0x92] = [this]() { this->sub_a_r8(D); };
+	instructions[0x93] = [this]() { this->sub_a_r8(E); };
+	instructions[0x94] = [this]() { this->sub_a_r8(H); };
+	instructions[0x95] = [this]() { this->sub_a_r8(L); };
+	instructions[0x96] = [this]() { this->sub_a_hl(); };
+	instructions[0x97] = [this]() { this->sub_a_r8(A); };
+
+	instructions[0x98] = [this]() { this->sbc_a_r8(B); };
+	instructions[0x99] = [this]() { this->sbc_a_r8(C); };
+	instructions[0x9A] = [this]() { this->sbc_a_r8(D); };
+	instructions[0x9B] = [this]() { this->sbc_a_r8(E); };
+	instructions[0x9C] = [this]() { this->sbc_a_r8(H); };
+	instructions[0x9D] = [this]() { this->sbc_a_r8(L); };
+	instructions[0x9E] = [this]() { this->sbc_a_hl(); };
+	instructions[0x9F] = [this]() { this->sbc_a_r8(A); };
+
+	instructions[0xA0] = [this]() { this->and_a_r8(B); };
+	instructions[0xA1] = [this]() { this->and_a_r8(C); };
+	instructions[0xA2] = [this]() { this->and_a_r8(D); };
+	instructions[0xA3] = [this]() { this->and_a_r8(E); };
+	instructions[0xA4] = [this]() { this->and_a_r8(H); };
+	instructions[0xA5] = [this]() { this->and_a_r8(L); };
+	instructions[0xA6] = [this]() { this->and_a_hl(); };
+	instructions[0xA7] = [this]() { this->and_a_r8(A); };
+
+	instructions[0xA8] = [this]() { this->xor_a_r8(B); };
+	instructions[0xA9] = [this]() { this->xor_a_r8(C); };
+	instructions[0xAA] = [this]() { this->xor_a_r8(D); };
+	instructions[0xAB] = [this]() { this->xor_a_r8(E); };
+	instructions[0xAC] = [this]() { this->xor_a_r8(H); };
+	instructions[0xAD] = [this]() { this->xor_a_r8(L); };
+	instructions[0xAE] = [this]() { this->xor_a_hl(); };
+	instructions[0xAF] = [this]() { this->xor_a_r8(A); };
+
+	instructions[0xB0] = [this]() { this->or_a_r8(B); };
+	instructions[0xB1] = [this]() { this->or_a_r8(C); };
+	instructions[0xB2] = [this]() { this->or_a_r8(D); };
+	instructions[0xB3] = [this]() { this->or_a_r8(E); };
+	instructions[0xB4] = [this]() { this->or_a_r8(H); };
+	instructions[0xB5] = [this]() { this->or_a_r8(L); };
+	instructions[0xB6] = [this]() { this->or_a_hl(); };
+	instructions[0xB7] = [this]() { this->or_a_r8(A); };
+
+	instructions[0xB8] = [this]() { this->cp_a_r8(B); };
+	instructions[0xB9] = [this]() { this->cp_a_r8(C); };
+	instructions[0xBA] = [this]() { this->cp_a_r8(D); };
+	instructions[0xBB] = [this]() { this->cp_a_r8(E); };
+	instructions[0xBC] = [this]() { this->cp_a_r8(H); };
+	instructions[0xBD] = [this]() { this->cp_a_r8(L); };
+	instructions[0xBE] = [this]() { this->cp_a_hl(); };
+	instructions[0xBF] = [this]() { this->cp_a_r8(A); };
+
+	instructions[0xC6] = [this]() { this->add_a_n8(); };
+	instructions[0xD6] = [this]() { this->sub_a_n8(); };
+	instructions[0xE6] = [this]() { this->and_a_n8(); };
+	instructions[0xF6] = [this]() { this->or_a_n8(); };
+	instructions[0xCE] = [this]() { this->adc_a_n8(); };
+	instructions[0xDE] = [this]() { this->sbc_a_n8(); };
+	instructions[0xEE] = [this]() { this->xor_a_n8(); };
+	instructions[0xFE] = [this]() { this->cp_a_n8(); };
+
+	instructions[0x27] = [this]() { this->daa(); };
+	instructions[0x37] = [this]() { this->scf(); };
+	instructions[0x2F] = [this]() { this->cpl(); };
+	instructions[0x3F] = [this]() { this->ccf(); };
 }
 void OpcodeMap::execute(uint8_t op_code) {
 	if (instructions[op_code]) {

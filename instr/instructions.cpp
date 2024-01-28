@@ -2,16 +2,19 @@
 
 /* Instruction reference
  * https://rgbds.gbdev.io/docs/v0.6.1/gbz80.7#INSTRUCTION_OVERVIEW
+ *
+ * DAA
+ * https://forums.nesdev.org/viewtopic.php?p=196282&sid=c09957170f76c60f51bc270df9c829e5#p196282
  */
 void Instructions::cost(uint8_t cycles, uint8_t size) {
 	cpu.add_clock_cycles(cycles); // BUG: This is potentially a bug. Might need to offset.
 	cpu.get_cpu_reg().add_pc(size);
 }
 void Instructions::half_carry_on_add(uint8_t val1, uint8_t val2) {
-	set_flag(HC, (((val1 & 0x0F) + (val2 & 0x0F)) & 0x10) > 0x10);
+	set_flag(HC, (((val1 & 0x0F) + (val2 & 0x0F)) & 0x10) >= 0x10);
 }
 void Instructions::half_carry_on_add(uint16_t val1, uint16_t val2) {
-	set_flag(HC, (((val1 & 0x00FF) + (val2 & 0x00FF)) & 0x100) > 0x0100);
+	set_flag(HC, (((val1 & 0x00FF) + (val2 & 0x00FF)) & 0x100) >= 0x0100);
 }
 void Instructions::half_carry_on_sub(uint8_t val1, uint8_t val2) {
 	set_flag(HC, ((val1 & 0x0F) - (val2 & 0x0F)) < 0);
@@ -45,8 +48,7 @@ void Instructions::halt() {
 	if (cpu.get_cpu_flag().get_ime()) {
 		// TODO: CPU wakes up and handles interrupts.
 		// TODO: The ISR needs to check if the CPU is halted and if so, unhalt it.
-	}
-	else {
+	} else {
 		/* Halt bug */
 		if (mem_util.is_interrupt_pending()) {
 			set_flag(HALT, false); // Wake up from an interrupt.
@@ -60,8 +62,7 @@ void OpcodeMap::prefix_cb() {
 	uint8_t cb_op_code = fetch_byte();
 	if (cb_instructions[cb_op_code]) {
 		cb_instructions[cb_op_code]();
-	}
-	else {
+	} else {
 		throw std::runtime_error("error, prefix_cb");
 	}
 	cost(1, 4);
@@ -147,8 +148,7 @@ void Instructions::jr_cc_e8(Cc cc) {
 	if (jump) {
 		set_reg(PC, get_reg(PC) + e8);
 		cost(2, 12);
-	}
-	else {
+	} else {
 		cost(2, 8);
 	}
 }
@@ -181,8 +181,7 @@ void Instructions::jp_cc_a16(Cc cc) {
 	if (jump) {
 		set_reg(PC, a16);
 		cost(3, 16);
-	}
-	else {
+	} else {
 		cost(3, 12);
 	}
 }
@@ -216,8 +215,7 @@ void Instructions::call_cc_a16(Cc cc) {
 		cpu.push(get_reg(PC) + 3);
 		set_reg(PC, a16);
 		cost(3, 24);
-	}
-	else {
+	} else {
 		cost(3, 12);
 	}
 }
@@ -250,8 +248,7 @@ void Instructions::ret_cc(Cc cc) {
 	if (ret) {
 		set_reg(PC, cpu.pop());
 		cost(1, 20);
-	}
-	else {
+	} else {
 		cost(1, 8);
 	}
 }
@@ -260,63 +257,13 @@ void Instructions::ret() {
 	cost(1, 16);
 }
 void Instructions::rst(Rst rst) {
-	switch (rst) {
-	case rst_00h:
-		cpu.push(get_reg(PC));
-		set_reg(PC, 0x00);
-		break;
-	case rst_08h:
-		cpu.push(get_reg(PC));
-		set_reg(PC, 0x08);
-		break;
-	case rst_10h:
-		cpu.push(get_reg(PC));
-		set_reg(PC, 0x10);
-		break;
-	case rst_18h:
-		cpu.push(get_reg(PC));
-		set_reg(PC, 0x18);
-		break;
-	case rst_20h:
-		cpu.push(get_reg(PC));
-		set_reg(PC, 0x20);
-		break;
-	case rst_28h:
-		cpu.push(get_reg(PC));
-		set_reg(PC, 0x28);
-		break;
-	case rst_30h:
-		cpu.push(get_reg(PC));
-		set_reg(PC, 0x30);
-		break;
-	case rst_38h:
-		cpu.push(get_reg(PC));
-		set_reg(PC, 0x38);
-		break;
-	}
-
+	cpu.push(get_reg(PC));
+	set_reg(PC, rst);
 	cost(1, 16);
 }
 void Instructions::ld_r16_n16(Reg reg) {
 	uint16_t n16 = fetch_address();
-
-	switch (reg) {
-	case BC:
-		set_reg(BC, n16);
-		break;
-	case DE:
-		set_reg(DE, n16);
-		break;
-	case HL:
-		set_reg(HL, n16);
-		break;
-	case SP:
-		set_reg(SP, n16);
-		break;
-	default:
-		throw std::runtime_error("error, ld_r16_n16");
-	}
-
+	set_reg(reg, n16);
 	cost(3, 12);
 }
 void Instructions::ld_a16_sp() {
@@ -485,4 +432,408 @@ void Instructions::ld_a_a16() {
 	uint8_t  val  = read_byte(addr);
 	set_reg(A, val);
 	cost(3, 16);
+}
+void Instructions::ld_r8_n8(Reg reg) {
+	uint8_t val = fetch_byte();
+	set_reg(reg, val);
+	cost(2, 8);
+}
+void Instructions::ld_r8_r8(Reg reg1, Reg reg2) {
+	set_reg(reg1, get_reg(reg2));
+	cost(1, 4);
+}
+void Instructions::add_hl_r16(Reg reg) {
+	uint16_t val = get_reg(reg);
+	set_flag(N, false);
+	half_carry_on_add(get_reg(HL), val);
+	set_flag(CY, (get_reg(HL) + val) > 0xFFFF);
+	set_reg(HL, get_reg(HL) + val);
+	cost(1, 8);
+}
+void Instructions::add_sp_e8() {
+	uint16_t sp     = get_reg(SP);
+	int8_t   e8     = fetch_signed_byte();
+	int16_t  e8_ext = static_cast<int16_t>(e8);
+	set_flag(Z, false);
+	set_flag(N, false);
+	set_flag(HC, ((sp & 0x000F) + (e8_ext & 0x000F)) & 0x0010);
+	set_flag(CY, ((uint32_t)sp + (uint32_t)e8_ext) > 0xFFFF);
+	set_reg(SP, sp + e8_ext);
+	cost(2, 16);
+}
+void Instructions::dec_r16(Reg reg) {
+	set_reg(reg, get_reg(reg) - 1);
+	cost(1, 8);
+}
+void Instructions::inc_r16(Reg reg) {
+	set_reg(reg, get_reg(reg) + 1);
+	cost(1, 8);
+}
+void Instructions::inc_r8(Reg reg) {
+	uint8_t r8;
+	r8 = get_reg(reg);
+	uint8_t res = r8 + 1;
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	half_carry_on_add(r8, 1);
+	set_reg(reg, res);
+	cost(1, 4);
+}
+void Instructions::inc_hl() {
+	uint16_t addr = get_reg(HL);
+	uint8_t  val  = read_byte(addr);
+	uint8_t  res  = val + 1;
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	half_carry_on_add(val, 1);
+	write_byte(addr, res);
+	cost(1, 12);
+}
+void Instructions::dec_r8(Reg reg) {
+	uint8_t r8;
+	r8 = get_reg(reg);
+	uint8_t res = r8 - 1;
+	set_flag(Z, res == 0);
+	set_flag(N, true);
+	half_carry_on_sub(r8, 1);
+	set_reg(reg, res);
+	cost(1, 4);
+}
+void Instructions::dec_hl() {
+	uint16_t addr = get_reg(HL);
+	uint8_t  val  = read_byte(addr);
+	uint8_t  res  = val - 1;
+	set_flag(Z, res == 0);
+	set_flag(N, true);
+	half_carry_on_sub(val, 1);
+	write_byte(addr, res);
+	cost(1, 12);
+}
+void Instructions::add_a_r8(Reg reg) {
+	uint8_t a   = get_reg(A);
+	uint8_t r8  = get_reg(reg);
+	uint8_t res = a + r8;
+	auto    sum = static_cast<uint16_t>(a) + static_cast<uint16_t>(r8);
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	half_carry_on_add(a, r8);
+	set_flag(CY, sum > 0xFF);
+	set_reg(A, res);
+	cost(1, 4);
+}
+void Instructions::add_a_hl() {
+	uint8_t  a    = get_reg(A);
+	uint16_t addr = get_reg(HL);
+	uint8_t  r8   = read_byte(addr);
+	uint8_t  res  = a + r8;
+	auto     sum  = static_cast<uint16_t>(a) + static_cast<uint16_t>(r8);
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	half_carry_on_add(a, r8);
+	set_flag(CY, sum > 0xFF);
+	set_reg(A, res);
+	cost(1, 8);
+}
+void Instructions::add_a_n8() {
+	uint8_t a   = get_reg(A);
+	uint8_t n8  = fetch_byte();
+	auto    sum = static_cast<uint16_t>(a) + static_cast<uint16_t>(n8);
+	uint8_t res = a + n8;
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	half_carry_on_add(a, n8);
+	set_flag(CY, sum > 0xFF);
+	set_reg(A, res);
+	cost(2, 8);
+}
+void Instructions::adc_a_r8(Reg reg) {
+	uint8_t a    = get_reg(A);
+	uint8_t r8   = get_reg(reg);
+	uint8_t temp = r8 + get_flag(CY);
+	auto    sum  = static_cast<uint16_t>(a) + static_cast<uint16_t>(temp);
+	uint8_t res  = a + temp;
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	half_carry_on_add(a, temp);
+	set_flag(CY, (sum > 0xFF));
+	set_reg(A, res);
+	cost(1, reg == HL ? 8 : 4);
+}
+void Instructions::adc_a_hl() {
+	uint8_t  a    = get_reg(A);
+	uint16_t addr = get_reg(HL);
+	uint8_t  r8   = read_byte(addr);
+	uint8_t  temp = r8 + get_flag(CY);
+	auto     sum  = static_cast<uint16_t>(a) + static_cast<uint16_t>(temp);
+	uint8_t  res  = a + temp;
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	half_carry_on_add(a, temp);
+	set_flag(CY, (sum > 0xFF));
+	set_reg(A, res);
+	cost(2, 8);
+}
+void Instructions::adc_a_n8() {
+	uint8_t a    = get_reg(A);
+	uint8_t n8   = fetch_byte();
+	uint8_t temp = n8 + get_flag(CY);
+	auto    sum  = static_cast<uint16_t>(a) + static_cast<uint16_t>(temp);
+	uint8_t res  = a + temp;
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	half_carry_on_add(a, temp);
+	set_flag(CY, (sum > 0xFF));
+	set_reg(A, res);
+	cost(2, 8);
+}
+void Instructions::sub_a_r8(Reg reg) {
+	uint8_t a   = get_reg(A);
+	uint8_t r8  = get_reg(reg);
+	uint8_t res = a - r8;
+	set_flag(Z, res == 0);
+	set_flag(N, true);
+	half_carry_on_sub(a, r8);
+	set_flag(CY, a < r8);
+	set_reg(A, res);
+	cost(1, 4);
+}
+void Instructions::sub_a_hl() {
+	uint8_t  a    = get_reg(A);
+	uint16_t addr = get_reg(HL);
+	uint8_t  r8   = read_byte(addr);
+	uint8_t  res  = a - r8;
+	set_flag(Z, res == 0);
+	set_flag(N, true);
+	half_carry_on_sub(a, r8);
+	set_flag(CY, a < r8);
+	set_reg(A, res);
+	cost(1, 8);
+}
+void Instructions::sub_a_n8() {
+	uint8_t a   = get_reg(A);
+	uint8_t n8  = fetch_byte();
+	uint8_t res = a - n8;
+	set_flag(Z, res == 0);
+	set_flag(N, true);
+	half_carry_on_sub(a, n8);
+	set_flag(CY, a < n8);
+	set_reg(A, res);
+	cost(2, 8);
+}
+void Instructions::sbc_a_r8(Reg reg) {
+	uint8_t a    = get_reg(A);
+	uint8_t r8   = get_reg(reg);
+	uint8_t temp = r8 + get_flag(CY);
+	uint8_t res  = a - temp;
+	set_flag(Z, res == 0);
+	set_flag(N, true);
+	half_carry_on_sub(a, temp);
+	set_flag(CY, a < temp);
+	set_reg(A, res);
+	cost(1, reg == HL ? 8 : 4);
+}
+void Instructions::sbc_a_hl() {
+	uint8_t  a    = get_reg(A);
+	uint16_t addr = get_reg(HL);
+	uint8_t  r8   = read_byte(addr);
+	uint8_t  temp = r8 + get_flag(CY);
+	uint8_t  res  = a - temp;
+	set_flag(Z, res == 0);
+	set_flag(N, true);
+	half_carry_on_sub(a, temp);
+	set_flag(CY, a < temp);
+	set_reg(A, res);
+	cost(2, 8);
+}
+void Instructions::sbc_a_n8() {
+	uint8_t a    = get_reg(A);
+	uint8_t n8   = fetch_byte();
+	uint8_t temp = n8 + get_flag(CY);
+	uint8_t res  = a - temp;
+	set_flag(Z, res == 0);
+	set_flag(N, true);
+	half_carry_on_sub(a, temp);
+	set_flag(CY, a < temp);
+	set_reg(A, res);
+	cost(2, 8);
+}
+void Instructions::and_a_r8(Reg reg) {
+	uint8_t a   = get_reg(A);
+	uint8_t r8  = get_reg(reg);
+	uint8_t res = a & r8;
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, true);
+	set_flag(CY, false);
+	set_reg(A, res);
+	cost(1, 4);
+}
+void Instructions::and_a_hl() {
+	uint8_t  a    = get_reg(A);
+	uint16_t addr = get_reg(HL);
+	uint8_t  r8   = read_byte(addr);
+	uint8_t  res  = a & r8;
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, true);
+	set_flag(CY, false);
+	set_reg(A, res);
+	cost(1, 8);
+}
+void Instructions::and_a_n8() {
+	uint8_t a   = get_reg(A);
+	uint8_t n8  = fetch_byte();
+	uint8_t res = a & n8;
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, true);
+	set_flag(CY, false);
+	set_reg(A, res);
+	cost(2, 8);
+}
+void Instructions::xor_a_r8(Reg reg) {
+	uint8_t a   = get_reg(A);
+	uint8_t r8  = get_reg(reg);
+	uint8_t res = a ^ r8;
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, false);
+	set_reg(A, res);
+	cost(1, 4);
+}
+void Instructions::xor_a_hl() {
+	uint8_t  a    = get_reg(A);
+	uint16_t addr = get_reg(HL);
+	uint8_t  r8   = read_byte(addr);
+	uint8_t  res  = a ^ r8;
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, false);
+	set_reg(A, res);
+	cost(1, 8);
+}
+void Instructions::xor_a_n8() {
+	uint8_t a   = get_reg(A);
+	uint8_t n8  = fetch_byte();
+	uint8_t res = a ^ n8;
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, false);
+	set_reg(A, res);
+	cost(2, 8);
+}
+void Instructions::or_a_r8(Reg reg) {
+	uint8_t a   = get_reg(A);
+	uint8_t r8  = get_reg(reg);
+	uint8_t res = a | r8;
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, false);
+	set_reg(A, res);
+	cost(1, 4);
+}
+void Instructions::or_a_hl() {
+	uint8_t  a    = get_reg(A);
+	uint16_t addr = get_reg(HL);
+	uint8_t  r8   = read_byte(addr);
+	uint8_t  res  = a | r8;
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, false);
+	set_reg(A, res);
+	cost(1, 8);
+}
+void Instructions::or_a_n8() {
+	uint8_t a   = get_reg(A);
+	uint8_t n8  = fetch_byte();
+	uint8_t res = a | n8;
+	set_flag(Z, res == 0);
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, false);
+	set_reg(A, res);
+	cost(2, 8);
+}
+void Instructions::cp_a_r8(Reg reg) {
+	uint8_t a   = get_reg(A);
+	uint8_t r8  = get_reg(reg);
+	uint8_t res = a - r8;
+	set_flag(Z, res == 0);
+	set_flag(N, true);
+	half_carry_on_sub(a, r8);
+	set_flag(CY, a < r8);
+	cost(1, 4);
+}
+void Instructions::cp_a_hl() {
+	uint8_t  a    = get_reg(A);
+	uint16_t addr = get_reg(HL);
+	uint8_t  r8   = read_byte(addr);
+	uint8_t  res  = a - r8;
+	set_flag(Z, res == 0);
+	set_flag(N, true);
+	half_carry_on_sub(a, r8);
+	set_flag(CY, a < r8);
+	cost(1, 8);
+}
+void Instructions::cp_a_n8() {
+	uint8_t a   = get_reg(A);
+	uint8_t n8  = fetch_byte();
+	uint8_t res = a - n8;
+	set_flag(Z, res == 0);
+	set_flag(N, true);
+	half_carry_on_sub(a, n8);
+	set_flag(CY, a < n8);
+	cost(2, 8);
+}
+void Instructions::daa() {
+	// source:
+	// https://forums.nesdev.org/viewtopic.php?p=196282&sid=c09957170f76c60f51bc270df9c829e5#p196282
+	// Retroactive BCD addition/subtraction adjustments
+	if (!get_flag(N)) {
+		// Adjustments after an addition.
+		if (get_flag(HC) || (get_reg(A) & 0x0F) > 0x09) {
+			set_reg(A, get_reg(A) + 0x06);
+		}
+
+		if (get_flag(CY) || get_reg(A) > 0x99) {
+			set_reg(A, get_reg(A) + 0x60);
+			set_flag(CY, true);
+		}
+	} else {
+		// Adjustments after a subtraction.
+		if (get_flag(HC)) {
+			set_reg(A, get_reg(A) - 0x6);
+		}
+
+		if (get_flag(CY)) {
+			set_reg(A, get_reg(A) - 0x60);
+		}
+	}
+
+	set_flag(Z, get_reg(A) == 0);
+	set_flag(HC, false);
+	cost(1, 4);
+}
+void Instructions::cpl() {
+	set_reg(A, ~get_reg(A));
+	set_flag(N, true);
+	set_flag(HC, true);
+	cost(1, 4);
+}
+void Instructions::scf() {
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, true);
+	cost(1, 4);
+}
+void Instructions::ccf() {
+	set_flag(N, false);
+	set_flag(HC, false);
+	set_flag(CY, !get_flag(CY));
+	cost(1, 4);
 }

@@ -5,11 +5,13 @@
 #include "cart.h"
 #include "cpu.h"
 #include "hw_reg.h"
+#include "operator.h"
 
 int main(int argc, char* argv[]) {
 	Cartridge cart;
 	HardwareRegisters hw_reg;
 	Cpu cpu(hw_reg);
+	OpcodeMap opcode_map;
 
 	cart.load_rom();
 

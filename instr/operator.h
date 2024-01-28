@@ -25,7 +25,6 @@ enum Reg {
 	HL,
 	SP,
 	PC,
-	n8,
 };
 
 enum Flags {
@@ -58,15 +57,14 @@ enum Rst {
 
 class Operator {
 protected:
+	HardwareRegisters hw_reg;
 	Cpu               cpu;
 	MemoryUtility     mem_util;
 	Timer             timer;
-	HardwareRegisters hw_reg;
 
 public:
-	Operator();
-	~Operator();
-
+	Operator() : hw_reg(), cpu(hw_reg), mem_util(hw_reg), timer(hw_reg) {}
+	~Operator() = default;
 
 	uint16_t get_reg(Reg reg);
 	void set_reg(Reg reg, uint16_t val);
@@ -84,7 +82,7 @@ public:
 
 class Instructions : public Operator {
 private:
-	InstructionDebug instr_debug;
+	InstructionDebug instr_debug{};
 
 	void debug_pc_start() {
 		instr_debug.set_initial_pc(get_reg(PC));
@@ -168,7 +166,7 @@ protected:
 	void ld_a_a16();                    // - - - - | 3, 16 | 0xFA
 
 	/* Load Instructions 8-bit */
-	void ld_r8_n8(Reg reg, Reg n8);     // - - - - | 2, 8 | 0x06, 0x0E, 0x16, 0x1E, 0x26, 0x2E, 0x3E
+	void ld_r8_n8(Reg reg);     // - - - - | 2, 8 | 0x06, 0x0E, 0x16, 0x1E, 0x26, 0x2E, 0x3E
 
 	/*
 	 * B: 0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x47
@@ -192,30 +190,39 @@ protected:
 	void inc_hl();                      // Z 0 H - | 1, 12 | 0x34
 	void dec_r8(Reg reg);               // Z 1 H - | 1, 4 | 0x05, 0x15, 0x25, 0x0D, 0x1D, 0x2D, 0x3D
 	void dec_hl();                      // Z 1 H - | 1, 12 | 0x35
+
 	void add_a_r8(Reg reg);             // Z 0 H C | 1, 4 | 0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x87
 	void add_a_hl();                    // Z 0 H C | 1, 8 | 0x86
 	void add_a_n8();                    // Z 0 H C | 2, 8 | 0xC6
+
 	void adc_a_r8(Reg reg);             // Z 0 H C | 1, 4 | 0x88, 0x89, 0x8A, 0x8B, 0x8C, 0x8D, 0x8F
 	void adc_a_hl();                    // Z 0 H C | 1, 8 | 0x8E
 	void adc_a_n8();                    // Z 0 H C | 2, 8 | 0xCE
+
 	void sub_a_r8(Reg reg);             // Z 1 H C | 1, 4 | 0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x97
 	void sub_a_hl();                    // Z 1 H C | 1, 8 | 0x96
 	void sub_a_n8();                    // Z 1 H C | 2, 8 | 0xD6
+
 	void sbc_a_r8(Reg reg);             // Z 1 H C | 1, 4 | 0x98, 0x99, 0x9A, 0x9B, 0x9C, 0x9D, 0x9F
 	void sbc_a_hl();                    // Z 1 H C | 1, 8 | 0x9E
 	void sbc_a_n8();                    // Z 1 H C | 2, 8 | 0xDE
+
 	void and_a_r8(Reg reg);             // Z 0 1 0 | 1, 4 | 0xA0, 0xA1, 0xA2, 0xA3, 0xA4, 0xA5, 0xA7
 	void and_a_hl();                    // Z 0 1 0 | 1, 8 | 0xA6
 	void and_a_n8();                    // Z 0 1 0 | 2, 8 | 0xE6
+
 	void xor_a_r8(Reg reg);             // Z 0 0 0 | 1, 4 | 0xA8, 0xA9, 0xAA, 0xAB, 0xAC, 0xAD, 0xAF
 	void xor_a_hl();                    // Z 0 0 0 | 1, 8 | 0xAE
 	void xor_a_n8();                    // Z 0 0 0 | 2, 8 | 0xEE
+
 	void or_a_r8(Reg reg);              // Z 0 0 0 | 1, 4 | 0xB0, 0xB1, 0xB2, 0xB3, 0xB4, 0xB5, 0xB7
 	void or_a_hl();                     // Z 0 0 0 | 1, 8 | 0xB6
 	void or_a_n8();                     // Z 0 0 0 | 2, 8 | 0xF6
+
 	void cp_a_r8(Reg reg);              // Z 1 H C | 1, 4 | 0xB8, 0xB9, 0xBA, 0xBB, 0xBC, 0xBD, 0xBF
 	void cp_a_hl();                     // Z 1 H C | 1, 8 | 0xBE
 	void cp_a_n8();                     // Z 1 H C | 2, 8 | 0xFE
+
 	void daa();                         // Z - 0 C | 1, 4 | 0x27
 	void cpl();                         // - 1 1 - | 1, 4 | 0x2F
 	void scf();                         // - 0 0 1 | 1, 4 | 0x37
@@ -309,7 +316,7 @@ public:
 	OpcodeMap() {
 		init_instructions();
 	};
-	~OpcodeMap();
+	~OpcodeMap() = default;
 
 	Instruction* get_cb_instruction() {
 		return cb_instructions;

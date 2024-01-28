@@ -17,6 +17,7 @@ I've used the following references, some more than others:
 - https://gbdev.gg8.se/wiki/articles/Gameboy_ROM_Header_Info
 - https://gekkio.fi/blog/2015/mooneye-gb-gameboy-cartridge-types/ - Mooneye
 - https://github.com/BluestormDNA/ProjectDMG - C# GameBoy emulator, a good sanity check to have.
+- https://forums.nesdev.org/viewtopic.php?p=196282&sid=c09957170f76c60f51bc270df9c829e5#p196282 - DAA
 
 ### Other useful things
 

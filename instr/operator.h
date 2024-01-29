@@ -4,7 +4,7 @@
 #include "functional"
 #include "cstdint"
 
-#include "cpu.h"
+#include "../cpu/cpu.h"
 #include "timer.h"
 #include "instr_debug.h"
 #include "util.h"
@@ -58,7 +58,6 @@ class Operator {
 protected:
 	Mmu           mmu;
 	Cpu           cpu;
-//	MemoryUtility mem_util;
 	Timer         timer;
 
 public:

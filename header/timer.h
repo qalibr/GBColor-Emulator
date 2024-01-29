@@ -4,16 +4,11 @@
 #include "cstdint"
 #include "vector"
 
-#include "../memory/hw_reg.h"
-#include "../memory/mem_util.h"
-#include "int_ctrl.h"
-#include "mmu.h"
+#include "../memory/mmu.h"
 
 class Timer {
 private:
 	Mmu& mmu;
-	MemoryUtility       mem_util;
-	InterruptController int_ctrl;
 
 	static const int NORMAL_FREQ  = 4194304;
 	static const int DOUBLE_FREQ  = 8388608;

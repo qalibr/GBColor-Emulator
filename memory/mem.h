@@ -5,7 +5,7 @@
 #include "cstdint"
 #include "stdexcept"
 
-#include "../memory/hw_reg.h"
+#include "hw_reg.h"
 #include "mem_map.h"
 
 class Memory {

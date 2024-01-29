@@ -3,6 +3,7 @@
 
 #include "cstdint"
 
+// Must not depend on any files outside /cpu
 #include "cpu_reg.h"
 
 class CpuFlags : public CpuRegisters {

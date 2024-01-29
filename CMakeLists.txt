@@ -27,32 +27,32 @@ add_executable(Ayb src/main.cpp
         header/screen.h
         src/screen.cpp
         utils/bit_util.h
-        header/mmu.h
-        header/mem.h
-        header/mem_map.h
+        memory/mmu.h
+        memory/mem.h
+        memory/mem_map.h
         memory/hw_reg_addr.h
         memory/hw_reg.h
         memory/hw_reg.cpp
         mbc/IMbc.h
         mbc/mbc3.h
-        src/mmu.cpp
+        memory/mmu.cpp
         memory/mem_util.h
         memory/mem_util.cpp
         mbc/cart.h
         mbc/cart.cpp
         mbc/mbc3.cpp
-        header/cpu_reg.h
-        header/cpu.h
-        src/cpu_reg.cpp
-        src/cpu.cpp
-        header/cpu_flag.h
-        src/cpu_flag.cpp
+        cpu/cpu_reg.h
+        cpu/cpu.h
+        cpu/cpu_reg.cpp
+        cpu/cpu.cpp
+        cpu/cpu_flag.h
+        cpu/cpu_flag.cpp
         instr/operator.h
         header/timer.h
         src/timer.cpp
         utils/bit_util.cpp
-        header/int_ctrl.h
-        src/int_ctrl.cpp
+        memory/int_ctrl.h
+        memory/int_ctrl.cpp
         instr/operator.cpp
         instr/operator.cpp
         instr/instructions.cpp

@@ -3,7 +3,7 @@
 #include "SDL2/SDL.h"
 
 #include "../mbc/cart.h"
-#include "cpu.h"
+#include "../cpu/cpu.h"
 #include "../memory/hw_reg.h"
 #include "operator.h"
 

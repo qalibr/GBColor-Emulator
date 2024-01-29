@@ -4,8 +4,8 @@
 #include "cstdint"
 #include "stdexcept"
 
-#include "../memory/hw_reg.h"
 #include "bit_util.h"
+#include "hw_reg.h"
 
 enum class InterruptType {
 	VBLANK,

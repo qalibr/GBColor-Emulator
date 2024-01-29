@@ -2,6 +2,7 @@
 #define AYB_CPU_REG_H
 
 #include "cstdint"
+// Must not depend on any files outside /cpu
 
 class CpuRegisters {
 protected:

@@ -4,11 +4,11 @@
 #include "cstdint"
 #include "stdexcept"
 
-#include "mmu.h"
 #include "cpu_reg.h"
 #include "cpu_flag.h"
-#include "../memory/mem_util.h"
+// Must not depend on any sub-files, for /memory only mmu
 #include "../mbc/IMbc.h"
+#include "../memory/mmu.h"
 
 class Cpu {
 private:
@@ -20,7 +20,7 @@ private:
 	int clock_cycles{};
 public:
 	explicit Cpu(IMbc* mbcController, Mmu& mmu) : mbc(mbcController), mmu(mmu) {
-		// Instantiate MMU
+		// Instantiate MMU with initialized mbc. This is passed on to operator.h
 		mmu = Mmu(mbc);
 	}
 	~Cpu() = default;

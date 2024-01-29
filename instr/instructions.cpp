@@ -34,7 +34,7 @@ void Instructions::nop() {
 void Instructions::stop() {
 	set_flag(STOP, true);
 
-	if (mem_util.is_speed_switch_pending()) {
+	if (mmu.mem_util.is_speed_switch_pending()) {
 		cpu.add_clock_cycles(2052);
 		timer.toggle_timer_speed();
 		mmu.hw_reg.set_div(0);
@@ -56,7 +56,7 @@ void Instructions::halt() {
 		// TODO: The ISR needs to check if the CPU is halted and if so, unhalt it.
 	} else {
 		/* Halt bug */
-		if (mem_util.is_interrupt_pending()) {
+		if (mmu.mem_util.is_interrupt_pending()) {
 			set_flag(HALT, false); // Wake up from an interrupt.
 			cpu.get_cpu_reg().dec_pc(1); // Decrement PC to simulate halt bug.
 		}

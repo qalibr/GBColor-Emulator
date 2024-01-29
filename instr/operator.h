@@ -58,12 +58,12 @@ class Operator {
 protected:
 	Mmu           mmu;
 	Cpu           cpu;
-	MemoryUtility mem_util;
+//	MemoryUtility mem_util;
 	Timer         timer;
 
 public:
-	Operator(Cpu& cpu, Mmu& mmu, MemoryUtility& memUtil)
-			: cpu(cpu), mmu(mmu), timer(mmu), mem_util(memUtil) {}
+	Operator(Cpu& cpu, Mmu& mmu)
+			: cpu(cpu), mmu(mmu), timer(mmu) {}
 
 	~Operator() = default;
 
@@ -332,8 +332,8 @@ protected:
 	void set_hl(uint8_t bit);           // - - - - | 2, 16
 
 public:
-	Instructions(Cpu& cpu, Mmu& mmu, MemoryUtility& memUtil)
-			: Operator(cpu, mmu, memUtil) {}
+	Instructions(Cpu& cpu, Mmu& mmu)
+			: Operator(cpu, mmu) {}
 	~Instructions() = default;
 };
 
@@ -345,8 +345,8 @@ private:
 	void prefix_cb(); // - - - - | 1, 4 | 0xCB
 
 public:
-	OpcodeMap(Cpu& cpu, Mmu& mmu, MemoryUtility& memUtil)
-			: Instructions(cpu, mmu, memUtil) {
+	OpcodeMap(Cpu& cpu, Mmu& mmu)
+			: Instructions(cpu, mmu) {
 		init_instructions();
 	}
 	~OpcodeMap() = default;

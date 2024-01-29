@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
 	MemoryUtility     mem_util;
 	Mmu               mmu(cart.get_mbc());
 	Cpu               cpu(cart.get_mbc(), mmu);
-	OpcodeMap         opcode_map(cpu, hw_reg, mem_util);
+	OpcodeMap         opcode_map(cpu, mmu, mem_util);
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 		std::cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
 
 	try {
 		int loop = 0;
-		while (loop < 1000) {
+		while (loop < 100) {
 			loop++;
 			opcode_map.execute(cpu.fetch_opcode());
 		}

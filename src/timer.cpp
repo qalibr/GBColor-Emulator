@@ -10,7 +10,7 @@ void Timer::handle_div_register(int cycles) {
 	div_counter += cycles;
 	if (div_counter < (is_double_speed ? DIV_CGB_FREQ : DIV_DMG_FREQ)) return;
 	div_counter = 0;
-	hw_reg.set_div(hw_reg.get_div() + 1);
+	mmu.hw_reg.set_div(mmu.hw_reg.get_div() + 1);
 }
 void Timer::handle_tima_register(int cycles) {
 	if (!mem_util.is_tac_timer_enabled()) return;
@@ -18,12 +18,12 @@ void Timer::handle_tima_register(int cycles) {
 	int speed = get_timer_speed();
 	if (tima_counter >= speed) {
 		tima_counter -= speed; // Decrement to handle multiple increments in one cycle.
-		if (hw_reg.get_tima() == 0xFF) {
-			hw_reg.set_tima(hw_reg.get_tima()); // Overflow so set to TMA.
+		if (mmu.hw_reg.get_tima() == 0xFF) {
+			mmu.hw_reg.set_tima(mmu.hw_reg.get_tima()); // Overflow so set to TMA.
 			int_ctrl.request_interrupt(InterruptType::TIMER);
 		}
 		else {
-			hw_reg.set_tima(hw_reg.get_tima() + 1); // TIMA++
+			mmu.hw_reg.set_tima(mmu.hw_reg.get_tima() + 1); // TIMA++
 		}
 	}
 }

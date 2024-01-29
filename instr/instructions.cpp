@@ -37,14 +37,14 @@ void Instructions::stop() {
 	if (mem_util.is_speed_switch_pending()) {
 		cpu.add_clock_cycles(2052);
 		timer.toggle_timer_speed();
-		hw_reg.set_div(0);
+		mmu.hw_reg.set_div(0);
 
 		/*
 		 * If the toggle put us in double speed mote, set bit 7.
 		 * If it put us in normal speed mode, clear bit 7.
 		 * In both cases we clear bit 0 to indicate that the speed switch is done.
 		 */
-		hw_reg.set_key1(timer.is_double_speed_enabled() ? 0xFE : 0x7E);
+		mmu.hw_reg.set_key1(timer.is_double_speed_enabled() ? 0xFE : 0x7E);
 	}
 
 	cost(1, 4);

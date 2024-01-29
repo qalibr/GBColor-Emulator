@@ -11,8 +11,7 @@
 
 class Timer {
 private:
-//	Mmu                 mmu;
-	HardwareRegisters   hw_reg;
+	Mmu& mmu;
 	MemoryUtility       mem_util;
 	InterruptController int_ctrl;
 
@@ -40,7 +39,7 @@ private:
 	};
 
 public:
-	Timer() = default;
+	Timer(Mmu& mmu) : mmu(mmu) {}
 	~Timer() = default;
 
 	void timer_step(int cycles);

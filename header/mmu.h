@@ -17,14 +17,14 @@
 class Mmu {
 private:
 	IMbc* mbc{};
-	MemoryUtility     mem_util;
-	HardwareRegisters hw_reg;
 
 public:
 	Mmu(IMbc* mbcController) : mbc(mbcController) {}
 	~Mmu() = default;
 
+	HardwareRegisters hw_reg;
 	[[nodiscard]] HardwareRegisters& get_hw_reg() { return hw_reg; }
+	MemoryUtility     mem_util;
 	[[nodiscard]] MemoryUtility& get_mem_util() { return mem_util; }
 
 	uint8_t read_byte(uint16_t addr);

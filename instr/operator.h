@@ -5,9 +5,7 @@
 #include "cstdint"
 
 #include "cpu.h"
-//#include "../memory/mem_util.h"
 #include "timer.h"
-//#include "../memory/hw_reg.h"
 #include "instr_debug.h"
 #include "util.h"
 
@@ -58,14 +56,14 @@ enum Rst {
 
 class Operator {
 protected:
-	HardwareRegisters hw_reg{};
-	Cpu               cpu;
-	MemoryUtility     mem_util;
-	Timer             timer;
+	Mmu           mmu;
+	Cpu           cpu;
+	MemoryUtility mem_util;
+	Timer         timer;
 
 public:
-	Operator(Cpu& cpu, HardwareRegisters& hwReg, MemoryUtility& memUtil)
-			: cpu(cpu), hw_reg(hwReg), mem_util(memUtil) {}
+	Operator(Cpu& cpu, Mmu& mmu, MemoryUtility& memUtil)
+			: cpu(cpu), mmu(mmu), timer(mmu), mem_util(memUtil) {}
 
 	~Operator() = default;
 
@@ -334,8 +332,8 @@ protected:
 	void set_hl(uint8_t bit);           // - - - - | 2, 16
 
 public:
-	Instructions(Cpu& cpu, HardwareRegisters& hwReg, MemoryUtility& memUtil)
-			: Operator(cpu, hwReg, memUtil) {}
+	Instructions(Cpu& cpu, Mmu& mmu, MemoryUtility& memUtil)
+			: Operator(cpu, mmu, memUtil) {}
 	~Instructions() = default;
 };
 
@@ -347,8 +345,8 @@ private:
 	void prefix_cb(); // - - - - | 1, 4 | 0xCB
 
 public:
-	OpcodeMap(Cpu& cpu, HardwareRegisters& hwReg, MemoryUtility& memUtil)
-			: Instructions(cpu, hwReg, memUtil) {
+	OpcodeMap(Cpu& cpu, Mmu& mmu, MemoryUtility& memUtil)
+			: Instructions(cpu, mmu, memUtil) {
 		init_instructions();
 	}
 	~OpcodeMap() = default;

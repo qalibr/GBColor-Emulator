@@ -28,7 +28,6 @@ add_executable(Ayb src/main.cpp
         src/screen.cpp
         utils/bit_util.h
         memory/mmu.h
-        memory/mem.h
         memory/mem_map.h
         memory/hw_reg_addr.h
         memory/hw_reg.h
@@ -36,8 +35,8 @@ add_executable(Ayb src/main.cpp
         mbc/IMbc.h
         mbc/mbc3.h
         memory/mmu.cpp
-        memory/mem_util.h
-        memory/mem_util.cpp
+        memory/mem.h
+        memory/mem.cpp
         mbc/cart.h
         mbc/cart.cpp
         mbc/mbc3.cpp

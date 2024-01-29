@@ -4,16 +4,11 @@
 #include "cstdint"
 
 #include "../mbc/IMbc.h"
-#include "mem_util.h"
+#include "mem.h"
 #include "hw_reg.h"
 #include "hw_reg_addr.h"
 #include "int_ctrl.h"
 #include "../mbc/mbc3.h"
-
-// MBC: IMbc is implemented elsewhere, but it is used here.
-//
-// MemoryUtil:
-// Offers various helpers for accessing memory, for example switching banks.
 
 class Mmu {
 private:
@@ -25,8 +20,8 @@ public:
 
 	HardwareRegisters hw_reg;
 	[[nodiscard]] HardwareRegisters& get_hw_reg() { return hw_reg; }
-	MemoryUtility mem_util;
-	[[nodiscard]] MemoryUtility& get_mem_util() { return mem_util; }
+	Memory mem_util;
+	[[nodiscard]] Memory& get_mem_util() { return mem_util; }
 	InterruptController int_ctrl;
 	[[nodiscard]] InterruptController& get_int_ctrl() { return int_ctrl; }
 

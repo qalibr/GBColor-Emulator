@@ -34,17 +34,17 @@ void Instructions::nop() {
 void Instructions::stop() {
 	set_flag(STOP, true);
 
-	if (mmu.mem_util.is_speed_switch_pending()) {
+	if (mmu.get_mem().is_speed_switch_pending()) {
 		cpu.add_clock_cycles(2052);
 		timer.toggle_timer_speed();
-		mmu.hw_reg.set_div(0);
+		mmu.get_hw_reg().set_div(0);
 
 		/*
 		 * If the toggle put us in double speed mote, set bit 7.
 		 * If it put us in normal speed mode, clear bit 7.
 		 * In both cases we clear bit 0 to indicate that the speed switch is done.
 		 */
-		mmu.hw_reg.set_key1(timer.is_double_speed_enabled() ? 0xFE : 0x7E);
+		mmu.get_hw_reg().set_key1(timer.is_double_speed_enabled() ? 0xFE : 0x7E);
 	}
 
 	cost(1, 4);
@@ -56,7 +56,7 @@ void Instructions::halt() {
 		// TODO: The ISR needs to check if the CPU is halted and if so, unhalt it.
 	} else {
 		/* Halt bug */
-		if (mmu.mem_util.is_interrupt_pending()) {
+		if (mmu.get_mem().is_interrupt_pending()) {
 			set_flag(HALT, false); // Wake up from an interrupt.
 			cpu.get_cpu_reg().dec_pc(1); // Decrement PC to simulate halt bug.
 		}

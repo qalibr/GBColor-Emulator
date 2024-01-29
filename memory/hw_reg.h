@@ -35,9 +35,10 @@ private:
 	uint8_t IE;   // FF0F
 
 public:
-//	VBK  = 0;
-//	KEY1 = 0x7E; // Normal speed mode and no pending speed switch
-	HardwareRegisters() = default;
+	HardwareRegisters() {
+		VBK  = 0;
+		KEY1 = 0x7E; // Normal speed mode and no pending speed switch
+	}
 	~HardwareRegisters() = default;
 
 	[[nodiscard]] uint8_t get_vbk() const;

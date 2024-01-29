@@ -12,7 +12,7 @@ private:
 public:
 	void set_initial_pc(uint16_t pc) { initial_pc = pc; }
 
-	void assert_pc(uint16_t currentPc, uint16_t expectedOffset) {
+	void assert_pc(uint16_t currentPc, uint16_t expectedOffset) const {
 		uint16_t expected_pc = initial_pc + expectedOffset;
 		if (currentPc != expected_pc) {
 			throw std::runtime_error("PC assertion failed: Expected " +

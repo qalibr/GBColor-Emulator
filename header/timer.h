@@ -34,7 +34,7 @@ private:
 	};
 
 public:
-	Timer(Mmu& mmu) : mmu(mmu) {}
+	explicit Timer(Mmu& mmu) : mmu(mmu) {}
 	~Timer() = default;
 
 	void timer_step(int cycles);
@@ -43,7 +43,7 @@ public:
 	static int max_cycles(float fps);
 	static void toggle_timer_speed();
 	int get_timer_speed();
-	bool is_double_speed_enabled() { return is_double_speed; }
+	static bool is_double_speed_enabled() { return is_double_speed; }
 };
 
 #endif //AYB_TIMER_H

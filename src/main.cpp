@@ -3,16 +3,16 @@
 #include "SDL2/SDL.h"
 
 #include "../mbc/cart.h"
+#include "../memory/mmu.h"
 #include "../cpu/cpu.h"
-#include "../memory/hw_reg.h"
 #include "operator.h"
 
 int main(int argc, char* argv[]) {
 	Cartridge cart;
 	cart.load_rom();
-	Mmu               mmu(cart.get_mbc());
-	Cpu               cpu(cart.get_mbc(), mmu);
-	OpcodeMap         opcode_map(cpu, mmu);
+	Mmu       mmu(cart.get_mbc());
+	Cpu       cpu(cart.get_mbc(), mmu);
+	OpcodeMap opcode_map(cpu, mmu);
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 		std::cout << "SDL_Init Error: " << SDL_GetError() << std::endl;

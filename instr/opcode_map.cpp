@@ -299,13 +299,7 @@ void OpcodeMap::init_instructions() {
 	instructions[0x2F] = [this]() { this->cpl(); };
 	instructions[0x3F] = [this]() { this->ccf(); };
 
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 *///  * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	/* 				     Prefix Instructions				   */
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 *///  * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	/* Prefix Instructions */
 	cb_instructions[0x00] = [this]() { this->rlc_r8(B); };
 	cb_instructions[0x01] = [this]() { this->rlc_r8(C); };
 	cb_instructions[0x02] = [this]() { this->rlc_r8(D); };

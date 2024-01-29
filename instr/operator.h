@@ -56,9 +56,9 @@ enum Rst {
 
 class Operator {
 protected:
-	Mmu           mmu;
-	Cpu           cpu;
-	Timer         timer;
+	Mmu   mmu;
+	Cpu   cpu;
+	Timer timer;
 
 public:
 	Operator(Cpu& cpu, Mmu& mmu)
@@ -234,13 +234,7 @@ protected:
 	void scf();                         // - 0 0 1 | 1, 4 | 0x37
 	void ccf();                         // - 0 0 C | 1, 4 | 0x3F
 
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 *///  * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	/* 				     Prefix Instructions				   */
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 *///  * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	/* Prefix Instructions */
 	void rlc_r8(Reg reg);               // Z 0 0 C | 2, 8  | 0xCB: 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x07
 	void rlc_hl();                      // Z 0 0 C | 2, 16 | 0xCB: 0x06
 	void rl_r8(Reg reg);                // Z 0 0 C | 2, 8  | 0xCB: 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x17

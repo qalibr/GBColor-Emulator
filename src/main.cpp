@@ -10,8 +10,6 @@
 int main(int argc, char* argv[]) {
 	Cartridge cart;
 	cart.load_rom();
-	HardwareRegisters hw_reg;
-	MemoryUtility     mem_util;
 	Mmu               mmu(cart.get_mbc());
 	Cpu               cpu(cart.get_mbc(), mmu);
 	OpcodeMap         opcode_map(cpu, mmu);

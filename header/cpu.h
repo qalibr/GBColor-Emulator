@@ -27,7 +27,6 @@ public:
 
 	[[nodiscard]] CpuRegisters& get_cpu_reg() { return cpu_reg; }
 	[[nodiscard]] CpuFlags& get_cpu_flag() { return cpu_flag; }
-	[[nodiscard]] Mmu& get_mmu() { return mmu; }
 
 	uint8_t fetch_opcode();
 	int execute_step();

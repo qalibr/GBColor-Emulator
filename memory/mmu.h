@@ -20,7 +20,7 @@ private:
 	IMbc* mbc{};
 
 public:
-	Mmu(IMbc* mbcController) : mbc(mbcController) {}
+	explicit Mmu(IMbc* mbcController) : mbc(mbcController) {}
 	~Mmu() = default;
 
 	HardwareRegisters hw_reg;

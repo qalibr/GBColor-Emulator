@@ -12,7 +12,7 @@
 
 class MemoryUtility : public Memory {
 private:
-	HardwareRegisters* hw_reg;
+	HardwareRegisters* hw_reg{};
 
 public:
 	MemoryUtility() = default;

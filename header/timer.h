@@ -8,7 +8,7 @@
 
 class Timer {
 private:
-	Mmu& mmu;
+	Mmu mmu;
 
 	static const int NORMAL_FREQ  = 4194304;
 	static const int DOUBLE_FREQ  = 8388608;
@@ -34,7 +34,7 @@ private:
 	};
 
 public:
-	explicit Timer(Mmu& mmu) : mmu(mmu) {}
+	explicit Timer(Mmu mmu) : mmu(mmu) {}
 	~Timer() = default;
 
 	void timer_step(int cycles);

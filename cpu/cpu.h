@@ -15,11 +15,11 @@ private:
 	CpuRegisters cpu_reg{};
 	CpuFlags     cpu_flag{};
 	IMbc* mbc;
-	Mmu & mmu;
+	Mmu  mmu;
 
 	int clock_cycles{};
 public:
-	explicit Cpu(IMbc* mbcController, Mmu& mmu) : mbc(mbcController), mmu(mmu) {
+	explicit Cpu(IMbc* mbcController, Mmu mmu) : mbc(mbcController), mmu(mmu) {
 		// Instantiate MMU with initialized mbc. This is passed on to operator.h
 		mmu = Mmu(mbc);
 	}

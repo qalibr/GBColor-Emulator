@@ -61,7 +61,7 @@ protected:
 	Timer timer;
 
 public:
-	Operator(Cpu& cpu, Mmu& mmu)
+	Operator(Cpu cpu, Mmu mmu)
 			: cpu(cpu), mmu(mmu), timer(mmu) {}
 
 	~Operator() = default;
@@ -325,7 +325,7 @@ protected:
 	void set_hl(uint8_t bit);           // - - - - | 2, 16
 
 public:
-	Instructions(Cpu& cpu, Mmu& mmu)
+	Instructions(Cpu cpu, Mmu mmu)
 			: Operator(cpu, mmu) {}
 	~Instructions() = default;
 };
@@ -338,7 +338,7 @@ private:
 	void prefix_cb(); // - - - - | 1, 4 | 0xCB
 
 public:
-	OpcodeMap(Cpu& cpu, Mmu& mmu)
+	OpcodeMap(Cpu cpu, Mmu mmu)
 			: Instructions(cpu, mmu) {
 		init_instructions();
 	}

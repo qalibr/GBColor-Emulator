@@ -14,7 +14,7 @@ private:
 	HardwareRegisters hw_reg{};
 
 	uint8_t VRAM0[8192]{}; // VBK selects bank
-	uint8_t* WRAM_BANKS[8]{}; // SVBK selects bank
+	uint8_t* WRAM_BANKS[8]{}; // SVBK selects bank TODO: Consider not using pointer?
 	uint8_t WRAM0[4096]{};
 	uint8_t VRAM1[8192]{};
 	uint8_t WRAM1[4096]{};
